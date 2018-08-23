@@ -237,8 +237,9 @@ const app = function () {
 			elmnt = z[i];
 			/*search for elements with a certain atrribute:*/
 			file = elmnt.getAttribute("w3-include-html");
+
 			if (file) {
-				console.log('getting include for ' + elmnt.id);
+				console.log('getting include for ' + elmnt.id + 'file=' + file);
 				/*make an HTTP request using the attribute value as the file name:*/
 				xhttp = new XMLHttpRequest();
 				xhttp.onreadystatechange = function() {
