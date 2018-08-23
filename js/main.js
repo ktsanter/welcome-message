@@ -9,6 +9,7 @@ const app = function () {
 	//const API_KEY = 'MVstandardsAPI';
 	
 	const NO_COURSE = 'NO_COURSE';
+	const TEMPLATE_CLASS = 'wl-has-template-item';
 	
 	const page = {};
 	const settings = {};
@@ -33,7 +34,7 @@ const app = function () {
 			"fullname": "Foundations of Programming"
 		}
 	};
-
+	
 	function init () {
 		page.header = document.getElementById('header');
 		page.header.toolname = document.getElementById('toolname');
@@ -186,12 +187,11 @@ const app = function () {
 	}
 	
 	function _generateStudentWelcomeLetter() {
-		console.log('generate student welcome letter for ' + settings.coursekey);
-		
 		_includeHTML("msg_header", "./include/msg_header.html");
 		_includeHTML("msg_generalinfo", "./include/msg_generalinfo.html");
 		_includeHTML("msg_welcome", "./include/msg_welcome.html");
-		_includeHTML("msg_expectationsofyou", "./include/msg_expectationsofyou.html");
+		_includeHTML("msg_exp1", "./include/msg_exp1.html");
+		_includeHTML("msg_exp2", "./include/msg_exp2.html");
 	}
 	
 	function _generateMentorWelcomeLetter() {
@@ -200,14 +200,31 @@ const app = function () {
 	
 	function _includeHTML(elemId, url) {
 		$("#" + elemId).load(url, function(response, status, xhr) {
-			console.log('elemId=' + elemId + ' status=' + xhr.status + " statusText=" + xhr.statusText);
-		});
+			var templateElements = document.getElementById(elemId).getElementsByClassName(TEMPLATE_CLASS);
+			for (var i = 0; i < templateElements.length; i++) {
+				var ihtml = templateElements.item(i).innerHTML;
+				templateElements.item(i).innerHTML = _replaceTemplateVariables(ihtml);
+			}
+		});	
+	}
+
+	function _replaceTemplateVariables(str) {
+		var matches = str.match(/\[\[.*\]\]/);
+		for (var i = 0; i < matches.length; i++) {
+			console.log('match #' + i + ' = ' + matches[i]);
+			var replacement = _replacementSingleTemplateVariable(matches[i]);
+			str = str.replace(matches[i], replacement);
+		}
 		
+		return str;
 	}
-
-	function report(elemId, response, status, xhr) {
+	
+	function _replacementSingleTemplateVariable(str) {
+		if (str == '[[coursefullname]]') return courseInfo[settings.coursekey].fullname;
+		
+		return str;
 	}
-
+	
 	function _enableControls(enable) {
 		page.courseselect.disabled = !enable;
 		page.studentwelcome.disabled = !enable;
