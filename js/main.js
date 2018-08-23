@@ -187,14 +187,27 @@ const app = function () {
 	
 	function _generateStudentWelcomeLetter() {
 		console.log('generate student welcome letter for ' + settings.coursekey);
-		//$("#msg_header").load('./import/msg_header.html');
-		_includeHTML();
+		
+		_includeHTML("msg_header", "./include/msg_header.html");
+		_includeHTML("msg_generalinfo", "./include/msg_generalinfo.html");
+		_includeHTML("msg_welcome", "./include/msg_welcome.html");
+		_includeHTML("msg_expectationsofyou", "./include/msg_expectationsofyou.html");
 	}
 	
 	function _generateMentorWelcomeLetter() {
 		console.log('generate mentor welcome letter for ' + settings.coursekey);
 	}
 	
+	function _includeHTML(elemId, url) {
+		$("#" + elemId).load(url, function(response, status, xhr) {
+			console.log('elemId=' + elemId + ' status=' + xhr.status + " statusText=" + xhr.statusText);
+		});
+		
+	}
+
+	function report(elemId, response, status, xhr) {
+	}
+
 	function _enableControls(enable) {
 		page.courseselect.disabled = !enable;
 		page.studentwelcome.disabled = !enable;
@@ -227,11 +240,6 @@ const app = function () {
 		_generateWelcomeLetter();
 	}
 
-	function _includeHTML() {
-		$("#msg_header").load("./include/msg_header.html");
-		$("#msg_generalinfo").load("./include/msg_generalinfo.html");
-	}
-		
 	return {
 		init: init
  	};

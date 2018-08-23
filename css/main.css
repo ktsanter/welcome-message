@@ -9,6 +9,8 @@ body {
 	background-color: var(--wl-color2);
 	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 	font-size: 13px;
+	margin-left: 12px;
+	margin-right: 12px;
 }
 
 .wl-notice {
@@ -28,6 +30,11 @@ body {
 	padding-top: 6px;
 }
 
+.wl-logo {
+	margin-left: -25px;
+	margin-bottom: 16px;
+}
+
 select.wl-control {
 	font-size: 12px;
 }
@@ -41,55 +48,14 @@ img.wl-instructor-info {
 	width: 75px;
 	height: auto;
 }
-/*
-.wl-header {
-	color: var(--wl-color2);
-	background-color: var(--wl-color1);
-	border-color: var(--wl-color2);
-	border-style: solid;
-	border-width: 1px;
-	border-radius: 5px;
-	font-size: 14px;
+
+.wl-section-label {
+	color: white;
+	background-color: #2f8d98;
 	font-weight: bold;
-	padding-left: 4px;
-	margin-bottom: 8px;
-}
-
-.wl-control {
-	color: var(--wl-color1);
-	background-color: var(--wl-color2);
-	margin-left: 3px;
 	border-style: solid;
 	border-width: 1px;
-	border-radius: 7px;
-	font-size: 12px;
-	margin-top: 2px;
-	margin-bottom: 2px;
+	border-radius: 6px;
+	padding-left: 8px;
 }
 
-.wl-radio {
-	font-size: 12px;
-}
-
-.wl-control.wl-control-embed {
-	margin-left: 10px;
-	padding-top: 2px;
-}
-
-.wl-control:disabled {
-	color: var(--wl-color1);
-	background-color: var(--wl-color3);
-	margin-left: 3px;
-	border-style: solid;
-	border-width: 1px;
-	border-radius: 7px;
-	font-size: 12px;
-	margin-top: 2px;
-	margin-bottom: 2px;
-}
-
-.wl-control.wl-control-embed:disabled {
-	margin-left: 10px;
-	padding-top: 2px;
-}
-*/
