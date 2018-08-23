@@ -188,7 +188,7 @@ const app = function () {
 	function _generateStudentWelcomeLetter() {
 		console.log('generate student welcome letter for ' + settings.coursekey);
 		//$("#msg_header").load('./import/msg_header.html');
-		_includeHTML()
+		_jIncludeHTML();
 	}
 	
 	function _generateMentorWelcomeLetter() {
@@ -227,6 +227,10 @@ const app = function () {
 		_generateWelcomeLetter();
 	}
 
+	function _jIncludeHTML() {
+		$("#test").load('./include/msg_header.html');
+	}
+	
 	function _includeHTML() {
 		console.log('_includeHTML begin');
 		var z, i, elmnt, file, xhttp;
