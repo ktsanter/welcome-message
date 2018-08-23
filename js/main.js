@@ -228,7 +228,7 @@ const app = function () {
 	}
 
 	function _jIncludeHTML() {
-		$("#test").load('./include/msg_header.html');
+		$("#mytest").load("./include/msg_header.html");
 	}
 	
 	function _includeHTML() {
