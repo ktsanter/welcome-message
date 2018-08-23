@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Michigan Virtual welcome letter</title>
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+	<link rel="stylesheet" href="css/main.css">
+</head>
+
+<body class="wl-colorscheme">
+	<div id="header" class = 'container-fluid'> 
+		<span id="toolname" class='container'></span>
+		<span id="courses" class='container'></span>
+		<span id="controls" class='container'></span>
+	</div>
+	<div id="notice" class='container-fluid'></div>
+	<div id="contents" class='container-fluid'>
+	<!---- header / logo ---->
+		<div id="msg_header" class="row">
+			<div id="test" w3-include-html="include/msg_header.html"></div>
+		</div>
+	
+	<!--- two column "body" --->
+	</div>
+		<div class="row">
+			<div class="col-sm">
+				first of two columns
+			</div>
+			
+			<!--- instructor info and etc. column --->
+			<div class="col-sm">
+				<span><strong>Contact info</strong></span>
+				<table>
+					<tr>
+						<td>
+							<img class="wl-instructor-info" src="img/instructor.jpg" alt="instructor image">
+						</td>
+						
+						<td>
+							<strong>Instructor:</strong> Kevin Santer<br>
+							<strong>Phone:</strong> 734.999.0587<br>
+							<strong>Email:</strong>  Please use the messaging system inside the <a href="https://slp.michiganvirtual.org/PublicWelcome.aspx" alt="student learning portal" target="_blank">Student Learning Portal</a> (SLP).
+							You can also use <a href="mailto:ksanter@michiganvirtual.org" alt="ksanter email" target="_blank">ksanter@michiganvirtual.org</a>
+						</td>
+					</tr>
+				 </table>
+				 <br>
+				<p><strong>Technical Support:</strong> You will find a link in the course titled Getting Help which gives information for the Customer Care Center and other resources</p>
+				<p><strong>Term Dates:</strong> The <a href="https://michiganvirtual.org/students/calendar/2018-19/" alt="enrollment calendar" target="_blank">Michigan Virtual Enrollment Calendar</a> is the official source of enrollment, start, end, and withdrawal dates.  Please refer to the section titled <em>Semester 1 (20 Weeks)</em> for this course </p>
+			</div>
+		</div>
+	</div>
+
+	<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+	<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+	<script src="js/main.js"></script>
+	<script>
+		document.addEventListener('DOMContentLoaded', app.init);
+	</script>
+</body>
+</html>
