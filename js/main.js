@@ -1,5 +1,7 @@
 //
 // TODO: move courseInfo to Google Sheet and deploy web API
+// TODO: add removal of children on reload for navmode
+// TODO: move html generation for .contents inside here
 //
 const app = function () {
 	const PAGE_TITLE = 'Welcome letter message generator'
@@ -187,23 +189,26 @@ const app = function () {
 	}
 	
 	function _generateStudentWelcomeLetter() {
-		_includeHTML("msg_header", "./include/msg_header.html");
-		_includeHTML("msg_contact", "./include/msg_student_contact.html");
+		_includeHTML("msg_student_contact", "./include/msg_student_contact.html");
+		
 		_includeHTML("msg_generalinfo", "./include/msg_student_generalinfo.html");
 		_includeHTML("msg_welcome", "./include/msg_student_welcome.html");
 		_includeHTML("msg_exp1", "./include/msg_student_exp1.html");
 		_includeHTML("msg_exp2", "./include/msg_student_exp2.html");
+
+		_includeHTML("msg_student_keypoints", "./include/msg_student_keypoints_diglit.html");
 	}
 	
 	function _generateMentorWelcomeLetter() {
-		_includeHTML("msg_header", "./include/msg_header.html");
 		_includeHTML("msg_mentor_contact", "./include/msg_mentor_contact.html");
+
 		_includeHTML("msg_mentor_generalinfo", "./include/msg_mentor_generalinfo.html");
 		_includeHTML("msg_mentor_welcome", "./include/msg_mentor_welcome.html");
 		_includeHTML("msg_mentor_resources", "./include/msg_mentor_resources.html");
 		_includeHTML("msg_mentor_exp1", "./include/msg_mentor_exp1.html");
 		_includeHTML("msg_mentor_response", "./include/msg_mentor_response.html");
 		_includeHTML("msg_mentor_specialpop", "./include/msg_mentor_specialpop.html");
+
 		_includeHTML("msg_mentor_keypoints", "./include/msg_mentor_keypoints_diglit.html");
 	}
 	

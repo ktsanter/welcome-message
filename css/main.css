@@ -14,40 +14,16 @@ body {
 	margin-right: 12px;
 }
 
-
-.wl-contact {
-	display: inline-block;
-	background-color: white;
-}
-
-td.wl-contact {
-	padding-left: 10px;
-	padding-right: 10px;
-	margin-left: 10px;
-	margin-right: 10px;
-}
-
 .wl-notice {
 	color: blue;
 	font-size: 14px;
 	font-style: italic;
 }
 
-.wl-header {
-	color: var(--wl-color2);
-	background-color: var(--wl-color1);
-	border-color: var(--wl-color2);
-	border-style: solid;
-	border-width: 1px;
-	border-radius: 8px;
-	font-size: 14px;
-	font-weight: bold;
-	padding-top: 6px;
-}
-
 .wl-logo {
-	margin-left: -25px;
-	margin-bottom: 16px;
+	margin-left: 2px;
+	margin-top: 2px;
+	margin-bottom: -5px;
 }
 
 select.wl-control {
@@ -96,7 +72,7 @@ img.wl-instructor-info {
 	padding-left: 2px;
 	padding-right: 2px;
 }
-
+/*
 .wl-keypoints {
 	display: inline-block;
 	background-color: white;
@@ -108,3 +84,4 @@ img.wl-instructor-info {
 	padding-left: 8px;
 	padding-right: 8px;
 }
+*/
