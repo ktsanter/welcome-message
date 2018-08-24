@@ -188,30 +188,45 @@ const app = function () {
 	
 	function _generateStudentWelcomeLetter() {
 		_includeHTML("msg_header", "./include/msg_header.html");
-		_includeHTML("msg_generalinfo", "./include/msg_generalinfo.html");
-		_includeHTML("msg_welcome", "./include/msg_welcome.html");
-		_includeHTML("msg_exp1", "./include/msg_exp1.html");
-		_includeHTML("msg_exp2", "./include/msg_exp2.html");
+		_includeHTML("msg_contact", "./include/msg_student_contact.html");
+		_includeHTML("msg_generalinfo", "./include/msg_student_generalinfo.html");
+		_includeHTML("msg_welcome", "./include/msg_student_welcome.html");
+		_includeHTML("msg_exp1", "./include/msg_student_exp1.html");
+		_includeHTML("msg_exp2", "./include/msg_student_exp2.html");
 	}
 	
 	function _generateMentorWelcomeLetter() {
-		console.log('generate mentor welcome letter for ' + settings.coursekey);
+		_includeHTML("msg_header", "./include/msg_header.html");
+		_includeHTML("msg_mentor_contact", "./include/msg_mentor_contact.html");
+		_includeHTML("msg_mentor_generalinfo", "./include/msg_mentor_generalinfo.html");
+		_includeHTML("msg_mentor_welcome", "./include/msg_mentor_welcome.html");
+		_includeHTML("msg_mentor_resources", "./include/msg_mentor_resources.html");
+		_includeHTML("msg_mentor_exp1", "./include/msg_mentor_exp1.html");
+		_includeHTML("msg_mentor_response", "./include/msg_mentor_response.html");
+		_includeHTML("msg_mentor_specialpop", "./include/msg_mentor_specialpop.html");
+		_includeHTML("msg_mentor_keypoints", "./include/msg_mentor_keypoints_diglit.html");
 	}
 	
 	function _includeHTML(elemId, url) {
 		$("#" + elemId).load(url, function(response, status, xhr) {
-			var templateElements = document.getElementById(elemId).getElementsByClassName(TEMPLATE_CLASS);
-			for (var i = 0; i < templateElements.length; i++) {
-				var ihtml = templateElements.item(i).innerHTML;
-				templateElements.item(i).innerHTML = _replaceTemplateVariables(ihtml);
+			if (status == "success") {
+				var templateElements = document.getElementById(elemId).getElementsByClassName(TEMPLATE_CLASS);
+				for (var i = 0; i < templateElements.length; i++) {
+					var ihtml = templateElements.item(i).innerHTML;
+					templateElements.item(i).innerHTML = _replaceTemplateVariables(ihtml);
+				}
+			} else {
+				var msg = 'failed to load ' + elemId + ' from ' + url;
+				console.log(msg);
+				_setNotice(msg);
 			}
 		});	
 	}
 
 	function _replaceTemplateVariables(str) {
 		var matches = str.match(/\[\[.*\]\]/);
+
 		for (var i = 0; i < matches.length; i++) {
-			console.log('match #' + i + ' = ' + matches[i]);
 			var replacement = _replacementSingleTemplateVariable(matches[i]);
 			str = str.replace(matches[i], replacement);
 		}
@@ -221,7 +236,7 @@ const app = function () {
 	
 	function _replacementSingleTemplateVariable(str) {
 		if (str == '[[coursefullname]]') return courseInfo[settings.coursekey].fullname;
-		
+
 		return str;
 	}
 	
