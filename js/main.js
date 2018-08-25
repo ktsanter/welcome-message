@@ -1,7 +1,6 @@
 //
 // TODO: move courseInfo to Google Sheet and deploy web API
 // TODO: add removal of children on reload for navmode
-// TODO: move html generation for .contents inside here
 //
 const app = function () {
 	const PAGE_TITLE = 'Welcome letter message generator'
@@ -193,13 +192,13 @@ const app = function () {
 	}
 	
 	function _loadStudentSubsections(elemId) {		
-		_includeHTML("msg_student_contact", "./include/msg_student_contact.html");
-		_includeHTML("msg_generalinfo", "./include/msg_student_generalinfo.html");
-		_includeHTML("msg_welcome", "./include/msg_student_welcome.html");
-		_includeHTML("msg_exp1", "./include/msg_student_exp1.html");
-		_includeHTML("msg_exp2", "./include/msg_student_exp2.html");
+		_includeHTML("msg_student_contact", "./include/msg_student_contact.html", _replaceAllTemplateVariables);
+		_includeHTML("msg_generalinfo", "./include/msg_student_generalinfo.html", _replaceAllTemplateVariables);
+		_includeHTML("msg_welcome", "./include/msg_student_welcome.html", _replaceAllTemplateVariables);
+		_includeHTML("msg_exp1", "./include/msg_student_exp1.html", _replaceAllTemplateVariables);
+		_includeHTML("msg_exp2", "./include/msg_student_exp2.html", _replaceAllTemplateVariables);
 
-		_includeHTML("msg_student_keypoints", "./include/msg_student_keypoints_diglit.html");
+		_includeHTML("msg_student_keypoints", "./include/msg_student_keypoints_diglit.html", _replaceAllTemplateVariables);
 	}
 	
 	function _generateMentorWelcomeLetter() {
