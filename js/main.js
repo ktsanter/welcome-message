@@ -219,6 +219,7 @@ const app = function () {
 	}
 	
 	function _includeHTML(elemId, url, callback) {
+		console.log('elemId=' + elemId + ' cb=' + callback);
 		$("#" + elemId).load(url, function(response, status, xhr) {
 			if (status == "success") {
 				callback(elemId);
