@@ -189,8 +189,11 @@ const app = function () {
 	}
 	
 	function _generateStudentWelcomeLetter() {
+		_includeHTML("contents", "./include/msg_student_main.html", _loadStudentSubsections);
+	}
+	
+	function _loadStudentSubsections(elemId) {		
 		_includeHTML("msg_student_contact", "./include/msg_student_contact.html");
-		
 		_includeHTML("msg_generalinfo", "./include/msg_student_generalinfo.html");
 		_includeHTML("msg_welcome", "./include/msg_student_welcome.html");
 		_includeHTML("msg_exp1", "./include/msg_student_exp1.html");
@@ -200,32 +203,40 @@ const app = function () {
 	}
 	
 	function _generateMentorWelcomeLetter() {
-		_includeHTML("msg_mentor_contact", "./include/msg_mentor_contact.html");
-
-		_includeHTML("msg_mentor_generalinfo", "./include/msg_mentor_generalinfo.html");
-		_includeHTML("msg_mentor_welcome", "./include/msg_mentor_welcome.html");
-		_includeHTML("msg_mentor_resources", "./include/msg_mentor_resources.html");
-		_includeHTML("msg_mentor_exp1", "./include/msg_mentor_exp1.html");
-		_includeHTML("msg_mentor_response", "./include/msg_mentor_response.html");
-		_includeHTML("msg_mentor_specialpop", "./include/msg_mentor_specialpop.html");
-
-		_includeHTML("msg_mentor_keypoints", "./include/msg_mentor_keypoints_diglit.html");
+		_includeHTML("contents", "./include/msg_mentor_main.html", _loadMentorSubsections);
 	}
 	
-	function _includeHTML(elemId, url) {
+	function _loadMentorSubsections(elemId) {
+		console.log('load mentor');
+		_includeHTML("msg_mentor_contact", "./include/msg_mentor_contact.html", _replaceAllTemplateVariables);
+		_includeHTML("msg_mentor_generalinfo", "./include/msg_mentor_generalinfo.html", _replaceAllTemplateVariables);
+		_includeHTML("msg_mentor_welcome", "./include/msg_mentor_welcome.html", _replaceAllTemplateVariables);
+		_includeHTML("msg_mentor_resources", "./include/msg_mentor_resources.html", _replaceAllTemplateVariables);
+		_includeHTML("msg_mentor_exp1", "./include/msg_mentor_exp1.html", _replaceAllTemplateVariables);
+		_includeHTML("msg_mentor_response", "./include/msg_mentor_response.html", _replaceAllTemplateVariables);
+		_includeHTML("msg_mentor_specialpop", "./include/msg_mentor_specialpop.html", _replaceAllTemplateVariables);
+
+		_includeHTML("msg_mentor_keypoints", "./include/msg_mentor_keypoints_diglit.html", _replaceAllTemplateVariables);
+	}
+	
+	function _includeHTML(elemId, url, callback) {
 		$("#" + elemId).load(url, function(response, status, xhr) {
 			if (status == "success") {
-				var templateElements = document.getElementById(elemId).getElementsByClassName(TEMPLATE_CLASS);
-				for (var i = 0; i < templateElements.length; i++) {
-					var ihtml = templateElements.item(i).innerHTML;
-					templateElements.item(i).innerHTML = _replaceTemplateVariables(ihtml);
-				}
+				callback(elemId);
 			} else {
 				var msg = 'failed to load ' + elemId + ' from ' + url;
 				console.log(msg);
 				_setNotice(msg);
 			}
 		});	
+	}
+	
+	function _replaceAllTemplateVariables(elemId) {
+		var templateElements = document.getElementById(elemId).getElementsByClassName(TEMPLATE_CLASS);
+		for (var i = 0; i < templateElements.length; i++) {
+			var ihtml = templateElements.item(i).innerHTML;
+			templateElements.item(i).innerHTML = _replaceTemplateVariables(ihtml);
+		}
 	}
 
 	function _replaceTemplateVariables(str) {
