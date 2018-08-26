@@ -1,6 +1,6 @@
 //
 // TODO: move courseInfo to Google Sheet and deploy web API
-// TODO: add removal of children on reload for navmode
+// TODO: handle AP general info
 //
 const app = function () {
 	const PAGE_TITLE = 'Welcome letter message generator'
@@ -13,26 +13,93 @@ const app = function () {
 	const TEMPLATE_CLASS = 'wl-has-template-item';
 	
 	const page = {};
-	const settings = {};
+	const settings = {
+		"include": "./include/",
+		"studentinclude": "./include/student/",
+		"mentorinclude": "./include/mentor/"
+	};
 	
+	const generalInfo = {
+		"student": {
+			"main": {"elementid": "contents", "file": "msg_student_main.html"},
+			"contact": {"elementid": "msg_student_contact", "file": "msg_student_contact.html"},
+			"generalinfo": {"elementid": "msg_generalinfo", "file": "msg_student_generalinfo.html"},
+			"welcome": {"elementid": "msg_welcome", "file": "msg_student_welcome.html"},
+			"expectations1": {"elementid": "msg_exp1", "file": "msg_student_exp1.html"},
+			"expectations2": {"elementid": "msg_exp2", "file": "msg_student_exp2.html"}
+		},
+		"mentor": {
+			"main": {"elementid": "contents", "file": "msg_mentor_main.html"},
+			"contact": {"elementid": "msg_mentor_contact", "file": "msg_mentor_contact.html"},
+			"generalinfo": {"elementid": "msg_mentor_generalinfo", "file": "msg_mentor_generalinfo.html"},
+			"welcome": {"elementid": "msg_mentor_welcome", "file": "msg_mentor_welcome.html"},
+			"resources": {"elementid": "msg_mentor_resources", "file": "msg_mentor_resources.html"},
+			"expectations": {"elementid": "msg_mentor_exp1", "file": "msg_mentor_exp1.html"},
+			"response": {"elementid": "msg_mentor_response", "file": "msg_mentor_response.html"},
+			"specialpop": {"elementid": "msg_mentor_specialpop", "file": "msg_mentor_specialpop.html"}
+		}		
+	}
+
 	const courseInfo = {
 		"game_design": {
-			"fullname": "Advanced Programming: Game Design & Animation"
+			"fullname": "Advanced Programming: Game Design & Animation",
+			"include": {
+				"student": [
+					{"elementid": "msg_student_keypoints", "file": "msg_student_keypoints_gamedesign.html"}
+				],
+				"mentor": [
+					{"elementid": "msg_mentor_keypoints", "file": "msg_mentor_keypoints_gamedesign.html"}
+				]
+			}				
 		},
 		"javascript": {
-			"fullname": "Advanced Web Design: JavaScript"
+			"fullname": "Advanced Web Design: JavaScript",
+			"include": {
+				"student": [
+					{"elementid": "msg_student_keypoints", "file": "msg_student_keypoints_javascript.html"}
+				],
+				"mentor": [
+					{"elementid": "msg_mentor_keypoints", "file": "msg_mentor_keypoints_javascript.html"}
+				]
+			}				
 		},
 		"apcsp1": {
-			"fullname": "AP Computer Science Principles (Sem 1)"
+			"fullname": "AP Computer Science Principles (Sem 1)",
+			"studentkeypoints": "",
+			"mentorkeypoints": ""
 		},
 		"html_css": {
-			"fullname": "Basic Web Design: HTML & CSS"
+			"fullname": "Basic Web Design: HTML & CSS",
+			"include": {
+				"student": [
+					{"elementid": "msg_student_keypoints", "file": "msg_student_keypoints_apcsp1.html"}
+				],
+				"mentor": [
+					{"elementid": "msg_mentor_keypoints", "file": "msg_mentor_keypoints_apcsp1.html"}
+				]
+			}				
 		},
 		"diglit": {
-			"fullname": "Digital Literacy & Programming"
+			"fullname": "Digital Literacy & Programming",
+			"include": {
+				"student": [
+					{"elementid": "msg_student_keypoints", "file": "msg_student_keypoints_diglit.html"}
+				],
+				"mentor": [
+					{"elementid": "msg_mentor_keypoints", "file": "msg_mentor_keypoints_diglit.html"}
+				]
+			}				
 		},
 		"fpa": {
-			"fullname": "Foundations of Programming"
+			"fullname": "Foundations of Programming",
+			"include": {
+				"student": [
+					{"elementid": "msg_student_keypoints", "file": "msg_student_keypoints_fpa.html"}
+				],
+				"mentor": [
+					{"elementid": "msg_mentor_keypoints", "file": "msg_mentor_keypoints_fpa.html"}
+				]
+			}				
 		}
 	};
 	
@@ -187,39 +254,69 @@ const app = function () {
 		}
 	}
 	
+	function _clearWelcomeLetter() {
+		var elemContents = document.getElementById('contents');
+		while (elemContents.firstChild) {
+			elemContents.removeChild(elemContents.firstChild);
+		}
+	}
+	
 	function _generateStudentWelcomeLetter() {
-		_includeHTML("contents", "./include/msg_student_main.html", _loadStudentSubsections);
+		_includeHTMLLookup(generalInfo.student.main, settings.studentinclude, _loadStudentSubsections);
 	}
 	
 	function _loadStudentSubsections(elemId) {		
-		_includeHTML("msg_student_contact", "./include/msg_student_contact.html", _replaceAllTemplateVariables);
-		_includeHTML("msg_generalinfo", "./include/msg_student_generalinfo.html", _replaceAllTemplateVariables);
-		_includeHTML("msg_welcome", "./include/msg_student_welcome.html", _replaceAllTemplateVariables);
-		_includeHTML("msg_exp1", "./include/msg_student_exp1.html", _replaceAllTemplateVariables);
-		_includeHTML("msg_exp2", "./include/msg_student_exp2.html", _replaceAllTemplateVariables);
+		var studentIncludePath = settings.studentinclude;
 
-		_includeHTML("msg_student_keypoints", "./include/msg_student_keypoints_diglit.html", _replaceAllTemplateVariables);
+		// general info
+		for (var key in generalInfo.student) {
+			if (key != 'main') {
+				var item = generalInfo.student[key];
+				_includeHTMLLookup(item, studentIncludePath, _replaceAllTemplateVariables);
+				}
+		}
+		
+		// course specific info
+		var studentSpecificsPath = studentIncludePath + settings.coursekey + '/' ;
+		var includeItems = courseInfo[settings.coursekey].include.student;
+
+		for (var i = 0; i < includeItems.length; i++) {
+			var item = includeItems[i];
+			_includeHTMLLookup(item, studentSpecificsPath, _replaceAllTemplateVariables);
+		}
 	}
 	
 	function _generateMentorWelcomeLetter() {
-		_includeHTML("contents", "./include/msg_mentor_main.html", _loadMentorSubsections);
+		_includeHTMLLookup(generalInfo.mentor.main, settings.mentorinclude, _loadMentorSubsections);
 	}
 	
 	function _loadMentorSubsections(elemId) {
-		console.log('load mentor');
-		_includeHTML("msg_mentor_contact", "./include/msg_mentor_contact.html", _replaceAllTemplateVariables);
-		_includeHTML("msg_mentor_generalinfo", "./include/msg_mentor_generalinfo.html", _replaceAllTemplateVariables);
-		_includeHTML("msg_mentor_welcome", "./include/msg_mentor_welcome.html", _replaceAllTemplateVariables);
-		_includeHTML("msg_mentor_resources", "./include/msg_mentor_resources.html", _replaceAllTemplateVariables);
-		_includeHTML("msg_mentor_exp1", "./include/msg_mentor_exp1.html", _replaceAllTemplateVariables);
-		_includeHTML("msg_mentor_response", "./include/msg_mentor_response.html", _replaceAllTemplateVariables);
-		_includeHTML("msg_mentor_specialpop", "./include/msg_mentor_specialpop.html", _replaceAllTemplateVariables);
+		var mentorIncludePath = settings.mentorinclude;
+		
+		// general info
+		for (var key in generalInfo.mentor) {
+			if (key != 'main') {
+				var item = generalInfo.mentor[key];
+				_includeHTMLLookup(item, mentorIncludePath, _replaceAllTemplateVariables);
+			}
+		}
 
-		_includeHTML("msg_mentor_keypoints", "./include/msg_mentor_keypoints_diglit.html", _replaceAllTemplateVariables);
+		// course specific info
+		var mentorSpecificsPath = mentorIncludePath + settings.coursekey + '/' ;
+		var includeItems = courseInfo[settings.coursekey].include.mentor;
+
+		for (var i = 0; i < includeItems.length; i++) {
+			var item = includeItems[i];
+			_includeHTMLLookup(item, mentorSpecificsPath, _replaceAllTemplateVariables);
+		}
+	}
+	
+	function _includeHTMLLookup(info, path, callback) {
+		_includeHTML(info.elementid, path + info.file, callback);
 	}
 	
 	function _includeHTML(elemId, url, callback) {
-		console.log('elemId=' + elemId + ' cb=' + callback);
+//		console.log('elemId=' + elemId + ' url=' + url + ' cb=' + callback);
 		$("#" + elemId).load(url, function(response, status, xhr) {
 			if (status == "success") {
 				callback(elemId);
@@ -278,6 +375,7 @@ const app = function () {
 		if (page.courseselect.value == NO_COURSE) return;
 		
 		settings.coursekey = evt.target.value;
+		_clearWelcomeLetter();
 		_generateWelcomeLetter();
 	}
 	
