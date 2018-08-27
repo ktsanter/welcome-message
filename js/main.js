@@ -1,5 +1,5 @@
 //
-// 
+// TODO: change student/mentor to layoutType
 //
 const app = function () {
 	const PAGE_TITLE = 'Welcome letter message generator'
@@ -93,8 +93,7 @@ const app = function () {
 	// query params:
 	//    navmode: display course dropdown and student/mentor options (other params ignored if navmode)
 	//    coursekey:  short name for course (required unless navmode)
-	//    student: make student welcome (either this or mentor is required unless navmode)
-	//    mentor: make mentor welcome (either this or student is required unless navmode)
+	//    layout: "student" or "mentor"  (required unless navmode)
 	//-------------------------------------------------------------------------------------
 	function _initializeSettings() {
 		var result = false;
@@ -103,25 +102,20 @@ const app = function () {
 		
 		settings.navmode = false;
 		settings.coursekey = NO_COURSE;
-		settings.studentmentor = 'student';
+		settings.studentmentor = '';
 			
 		var urlParams = new URLSearchParams(window.location.search);
 		params.navmode = urlParams.has('navmode');
 		params.coursekey = urlParams.has('coursekey') ? urlParams.get('coursekey') : null;
-		params.student = urlParams.has('student');
-		params.mentor = urlParams.has('mentor');
-
+		params.layouttype = urlParams.has('layout') ? urlParams.get('layout') : null;
 		settings.navmode = params.navmode;
+
 		if (params.navmode) {
 			result = true;
 			
-		} else if (params.coursekey != null && (params.student || params.mentor)) {
+		} else if (params.coursekey != null && params.layouttype != null) {
 			settings.coursekey = params.coursekey;
-			if (params.student) {
-				settings.studentmentor = 'student';
-			} else {
-				settings.studentmentor = 'mentor';
-			}
+			settings.studentmentor = params.layouttype;
 			result = true;
 		} 
 		
