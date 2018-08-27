@@ -1,6 +1,6 @@
 //
 // TODO: move courseInfo to Google Sheet and deploy web API
-// TODO: handle AP general info
+// TODO: get course list from Web API
 //
 const app = function () {
 	const PAGE_TITLE = 'Welcome letter message generator'
@@ -12,108 +12,214 @@ const app = function () {
 	const NO_COURSE = 'NO_COURSE';
 	const TEMPLATE_CLASS = 'wl-has-template-item';
 	
+	const USE_DEFAULT = 'USE_DEFAULT';
+	
 	const page = {};
 	const settings = {
 		"include": "./include/",
 		"standardexpectations": {"elementid": "msg_exp1", "file": "msg_student_exp1.html"},
 		"apexpectations": {"elementid": "msg_exp1", "file": "msg_student_exp1_ap.html"}
 	};
-	
-	const generalInfo = {
+
+	const layoutElementId = {
 		"student": {
-			"main": {"elementid": "contents", "file": "msg_student_main.html"},
-			"contact": {"elementid": "msg_student_contact", "file": "msg_student_contact.html"},
-			"generalinfo": {"elementid": "msg_generalinfo", "file":  "msg_student_generalinfo.html"},
-			"welcome": {"elementid": "msg_welcome", "file":  "msg_student_welcome.html"},
-			"expectations2": {"elementid": "msg_exp2", "file":  "msg_student_exp2.html"}
+			"main": "contents",
+			"contact": "msg_student_contact",
+			"generalinfo": "msg_generalinfo",
+			"welcome": "msg_welcome",
+			"expectations1": "msg_exp1",
+			"expectations2": "msg_exp2",
+			"keypoints": "msg_student_keypoints"
 		},
 		"mentor": {
-			"main": {"elementid": "contents", "file":  "msg_mentor_main.html"},
-			"contact": {"elementid": "msg_mentor_contact", "file":  "msg_mentor_contact.html"},
-			"generalinfo": {"elementid": "msg_mentor_generalinfo", "file":  "msg_mentor_generalinfo.html"},
-			"welcome": {"elementid": "msg_mentor_welcome", "file":  "msg_mentor_welcome.html"},
-			"resources": {"elementid": "msg_mentor_resources", "file":  "msg_mentor_resources.html"},
-			"expectations": {"elementid": "msg_mentor_exp1", "file":  "msg_mentor_exp1.html"},
-			"response": {"elementid": "msg_mentor_response", "file":  "msg_mentor_response.html"},
-			"specialpop": {"elementid": "msg_mentor_specialpop", "file":  "msg_mentor_specialpop.html"}
-		}		
-	}
-
-	const courseInfo = {
+			"main": "contents",
+			"contact": "msg_mentor_contact",
+			"generalinfo": "msg_mentor_generalinfo",
+			"welcome": "msg_mentor_welcome",
+			"resources": "msg_mentor_resources",
+			"expectations": "msg_mentor_exp1",
+			"response": "msg_mentor_response",
+			"specialpop": "msg_mentor_specialpop",
+			"keypoints": "msg_mentor_keypoints"
+		}
+	};
+	
+	const defaultIncludeFile = {
+		"student": {
+			"main": "msg_student_main.html",
+			"contact": "msg_student_contact.html",
+			"generalinfo": "msg_student_generalinfo.html",
+			"welcome": "msg_student_welcome.html",
+			"expectations1": "msg_student_exp1.html",
+			"expectations2": "msg_student_exp2.html",
+			"keypoints": ""
+		},
+		"mentor": {
+			"main": "msg_mentor_main.html",
+			"contact": "msg_mentor_contact.html",
+			"generalinfo": "msg_mentor_generalinfo.html",
+			"welcome": "msg_mentor_welcome.html",
+			"resources": "msg_mentor_resources.html",
+			"expectations": "msg_mentor_exp1.html",
+			"response": "msg_mentor_response.html",
+			"specialpop": "msg_mentor_specialpop.html",
+			"keypoints": ""
+		}
+	};
+	
+	var courseInformation = {
 		"game_design": {
 			"fullname": "Advanced Programming: Game Design & Animation",
 			"include": {
-				"student": [
-					{"elementid": "msg_exp1", "file":  settings.standardexpectations.file},
-					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_game_design.html"}
-				],
-				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_game_design.html"}
-				]
-			}				
+				"student": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"expectations1": USE_DEFAULT,
+					"expectations2": USE_DEFAULT,
+					"keypoints": "msg_keypoints_student_game_design.html"
+				},
+				"mentor": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"resources": USE_DEFAULT,
+					"expectations": USE_DEFAULT,
+					"response": USE_DEFAULT,
+					"specialpop": USE_DEFAULT,
+					"keypoints": "msg_keypoints_mentor_game_design.html"
+				}
+			}
 		},
 		"javascript": {
 			"fullname": "Advanced Web Design: JavaScript",
 			"include": {
-				"student": [
-					{"elementid": "msg_exp1", "file":  settings.standardexpectations.file},
-					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_javascript.html"}
-				],
-				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_javascript.html"}
-				]
-			}				
+				"student": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"expectations1": USE_DEFAULT,
+					"expectations2": USE_DEFAULT,
+					"keypoints": "msg_keypoints_student_javascript.html"
+				},
+				"mentor": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"resources": USE_DEFAULT,
+					"expectations": USE_DEFAULT,
+					"response": USE_DEFAULT,
+					"specialpop": USE_DEFAULT,
+					"keypoints": "msg_keypoints_mentor_javascript.html"
+				}
+			}
 		},
 		"apcsp1": {
 			"fullname": "AP Computer Science Principles (Sem 1)",
 			"include": {
-				"student": [
-					{"elementid": "msg_exp1", "file":  settings.apexpectations.file},
-					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_apcsp1.html"}
-				],
-				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_apcsp1.html"}
-				]
+				"student": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"expectations1": USE_DEFAULT,
+					"expectations2": USE_DEFAULT,
+					"keypoints": "msg_keypoints_student_apcsp1.html"
+				},
+				"mentor": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"resources": USE_DEFAULT,
+					"expectations": USE_DEFAULT,
+					"response": USE_DEFAULT,
+					"specialpop": USE_DEFAULT,
+					"keypoints": "msg_keypoints_mentor_apcsp1.html"
+				}
 			}
 		},
 		"html_css": {
 			"fullname": "Basic Web Design: HTML & CSS",
 			"include": {
-				"student": [
-					{"elementid": "msg_exp1", "file":  settings.standardexpectations.file},
-					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_html_css.html"}
-				],
-				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_html_css.html"}
-				]
-			}				
+				"student": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"expectations1": USE_DEFAULT,
+					"expectations2": USE_DEFAULT,
+					"keypoints": "msg_keypoints_student_html_css.html"
+				},
+				"mentor": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"resources": USE_DEFAULT,
+					"expectations": USE_DEFAULT,
+					"response": USE_DEFAULT,
+					"specialpop": USE_DEFAULT,
+					"keypoints": "msg_keypoints_mentor_html_css.html"
+				}
+			}
 		},
 		"diglit": {
 			"fullname": "Digital Literacy & Programming",
 			"include": {
-				"student": [
-					{"elementid": "msg_exp1", "file":  settings.standardexpectations.file},
-					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_diglit.html"}
-				],
-				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_diglit.html"}
-				]
-			}				
+				"student": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"expectations1": USE_DEFAULT,
+					"expectations2": USE_DEFAULT,
+					"keypoints": "msg_keypoints_student_diglit.html"
+				},
+				"mentor": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"resources": USE_DEFAULT,
+					"expectations": USE_DEFAULT,
+					"response": USE_DEFAULT,
+					"specialpop": USE_DEFAULT,
+					"keypoints": "msg_keypoints_mentor_diglit.html"
+				}
+			}
 		},
 		"fpa": {
 			"fullname": "Foundations of Programming",
 			"include": {
-				"student": [
-					{"elementid": "msg_exp1", "file":  settings.standardexpectations.file},
-					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_fpa.html"}
-				],
-				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_fpa.html"}
-				]
-			}				
+				"student": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"expectations1": USE_DEFAULT,
+					"expectations2": USE_DEFAULT,
+					"keypoints": "msg_keypoints_student_fpa.html"
+				},
+				"mentor": {
+					"main": USE_DEFAULT,
+					"contact": USE_DEFAULT,
+					"generalinfo": USE_DEFAULT,
+					"welcome": USE_DEFAULT,
+					"resources": USE_DEFAULT,
+					"expectations": USE_DEFAULT,
+					"response": USE_DEFAULT,
+					"specialpop": USE_DEFAULT,
+					"keypoints": "msg_keypoints_mentor_fpa.html"
+				}
+			}
 		}
 	};
-	
+
 	function init () {
 		page.header = document.getElementById('header');
 		page.header.toolname = document.getElementById('toolname');
@@ -198,10 +304,10 @@ const app = function () {
 		elemNoCourseOption.text = '<select a course>';
 		elemCourseSelect.appendChild(elemNoCourseOption);
 		
-		for (var key in courseInfo) {
+		for (var key in courseInformation) {
 			var elemOption = document.createElement('option');
 			elemOption.value = key;
-			elemOption.text = courseInfo[key].fullname;
+			elemOption.text = courseInformation[key].fullname;
 			elemCourseSelect.appendChild(elemOption);
 		}
 
@@ -257,14 +363,6 @@ const app = function () {
 		return btn;
 	}
 	
-	function _generateWelcomeLetter() {
-		if (settings.studentmentor == 'student') {
-			_generateStudentWelcomeLetter();
-		} else {
-			_generateMentorWelcomeLetter();
-		}
-	}
-	
 	function _clearWelcomeLetter() {
 		var elemContents = document.getElementById('contents');
 		while (elemContents.firstChild) {
@@ -272,52 +370,56 @@ const app = function () {
 		}
 	}
 	
-	function _generateStudentWelcomeLetter() {
-		var item = generalInfo.student.main;
-		_includeHTML(item.elementid, settings.include + item.file, _loadStudentSubsections);
+	function _generateWelcomeLetter() {
+		_getWelcomeLetterConfiguration(_renderWelcomeLetterMain);
 	}
 	
-	function _generateMentorWelcomeLetter() {
-		var item = generalInfo.mentor.main;
-		_includeHTML(item.elementid, settings.include + item.file, _loadMentorSubsections);
-	}
-	
-	function _loadStudentSubsections(elemId) {		
-		// general info
-		for (var key in generalInfo.student) {
-			if (key != 'main') {
-				var item = generalInfo.student[key];
-				_includeHTML(item.elementid, settings.include + item.file, _replaceAllTemplateVariables);
-			}
+	function _getWelcomeLetterConfiguration(callback) {
+		var coursedata = courseInformation[settings.coursekey]; // TODO: retrieve using Web API
+		
+		if (settings.studentmentor == 'student') {
+			settings.config = {"fullname": coursedata.fullname, "include": coursedata.include.student, "layoutelement": layoutElementId.student, "defaultinclude": defaultIncludeFile.student};
+		} else {
+			settings.config = {"fullname": coursedata.fullname, "include": coursedata.include.mentor, "layoutelement": layoutElementId.mentor, "defaultinclude": defaultIncludeFile.mentor};
 		}
 		
-		// course specific info
-		var includeItems = courseInfo[settings.coursekey].include.student;
-		for (var i = 0; i < includeItems.length; i++) {
-			var item = includeItems[i];
-			_includeHTML(item.elementid, settings.include + item.file, _replaceAllTemplateVariables);
-		}
+		callback();
 	}
 	
-	function _loadMentorSubsections(elemId) {
-		// general info
-		for (var key in generalInfo.mentor) {
+	function _renderWelcomeLetterMain() {
+		var config = settings.config;
+		var fullname = config.fullname;
+		var include = config.include.main;
+		var layoutelement = config.layoutelement.main;
+		var defaultinclude = config.defaultinclude.main;
+		
+		var filename = include;
+		if (include == USE_DEFAULT) filename = defaultinclude
+		
+		_includeHTML(layoutelement, settings.include + filename, _renderWelcomeLetterSubsections);
+	}
+	
+	function _renderWelcomeLetterSubsections() {
+		var config = settings.config;
+		var fullname = config.fullname;
+		var include = config.include;
+		var layoutelement = config.layoutelement;
+		var defaultinclude = config.defaultinclude;
+		
+		for (var key in include) {
 			if (key != 'main') {
-				var item = generalInfo.mentor[key];
-				_includeHTML(item.elementid, settings.include + item.file, _replaceAllTemplateVariables);
+				var elementId = layoutelement[key];
+				var filename = include[key];
+				var defaultfilename = defaultinclude[key];
+				if (filename == USE_DEFAULT) filename = defaultfilename;
+				_includeHTML(elementId, settings.include + filename, _replaceAllTemplateVariables);
 			}
 		}
-
-		// course specific info
-		var includeItems = courseInfo[settings.coursekey].include.mentor;
-		for (var i = 0; i < includeItems.length; i++) {
-			var item = includeItems[i];
-			_includeHTML(item.elementid, settings.include + item.file, _replaceAllTemplateVariables);
-		}
 	}
 	
+	
 	function _includeHTML(elemId, url, callback) {
-//		console.log('elemId=' + elemId + ' url=' + url + ' cb=' + callback);
+		//console.log('_includeHTML: elemId=' + elemId + ' url=' + url); //+ ' cb=' + callback);
 		$("#" + elemId).load(url, function(response, status, xhr) {
 			if (status == "success") {
 				callback(elemId);
@@ -349,7 +451,7 @@ const app = function () {
 	}
 	
 	function _replacementSingleTemplateVariable(str) {
-		if (str == '[[coursefullname]]') return courseInfo[settings.coursekey].fullname;
+		if (str == '[[coursefullname]]') return courseInformation[settings.coursekey].fullname;
 
 		return str;
 	}
