@@ -10,15 +10,13 @@ const app = function () {
 	//const API_KEY = 'MVstandardsAPI';
 	
 	const NO_COURSE = 'NO_COURSE';
-	const TEMPLATE_CLASS = 'wl-has-template-item';
+	const TEMPLATEVAR_CLASS = 'wl-has-template-item';
 	
 	const USE_DEFAULT = 'USE_DEFAULT';
 	
 	const page = {};
 	const settings = {
 		"include": "./include/",
-		"standardexpectations": {"elementid": "msg_exp1", "file": "msg_student_exp1.html"},
-		"apexpectations": {"elementid": "msg_exp1", "file": "msg_student_exp1_ap.html"}
 	};
 
 	const layoutElementId = {
@@ -220,6 +218,9 @@ const app = function () {
 		}
 	};
 
+	/*---------------------------------------
+	* get things going
+	*----------------------------------------*/
 	function init () {
 		page.header = document.getElementById('header');
 		page.header.toolname = document.getElementById('toolname');
@@ -242,14 +243,14 @@ const app = function () {
 		}
 	}
 	
+	/*---------------------------------------
+	* query params:
+	*    navmode: display course dropdown and student/mentor options (other params ignored if navmode)
+	*    coursekey:  short name for course (required unless navmode)
+	*    student: make student welcome (either this or mentor is required unless navmode)
+	*    mentor: make mentor welcome (either this or student is required unless navmode)
+	*----------------------------------------*/
 	function _initializeSettings() {
-		/*
-		* params:
-		*    navmode: display course dropdown and student/mentor options (other params ignored if navmode)
-		*    coursekey:  short name for course (required unless navmode)
-		*    student: make student welcome (either this or mentor is required unless navmode)
-		*    mentor: make mentor welcome (either this or student is required unless navmode)
-		*/
 		var result = false;
 
 		var params = {};
@@ -280,6 +281,10 @@ const app = function () {
 		
 		return result;
 	}
+
+	/*---------------------------------------
+	* initialization of output page including optional controls section for navmode
+	*----------------------------------------*/
 	function _initHeader() {
 		page.header.classList.add('wl-header');
 				
@@ -363,13 +368,9 @@ const app = function () {
 		return btn;
 	}
 	
-	function _clearWelcomeLetter() {
-		var elemContents = document.getElementById('contents');
-		while (elemContents.firstChild) {
-			elemContents.removeChild(elemContents.firstChild);
-		}
-	}
-	
+	/*---------------------------------------
+	* gather config information and call to start rendering
+	*----------------------------------------*/
 	function _generateWelcomeLetter() {
 		_getWelcomeLetterConfiguration(_renderWelcomeLetterMain);
 	}
@@ -378,14 +379,35 @@ const app = function () {
 		var coursedata = courseInformation[settings.coursekey]; // TODO: retrieve using Web API
 		
 		if (settings.studentmentor == 'student') {
-			settings.config = {"fullname": coursedata.fullname, "include": coursedata.include.student, "layoutelement": layoutElementId.student, "defaultinclude": defaultIncludeFile.student};
+			settings.config = {
+				"fullname": coursedata.fullname, 
+				"include": coursedata.include.student, 
+				"layoutelement": layoutElementId.student, 
+				"defaultinclude": defaultIncludeFile.student
+			};
 		} else {
-			settings.config = {"fullname": coursedata.fullname, "include": coursedata.include.mentor, "layoutelement": layoutElementId.mentor, "defaultinclude": defaultIncludeFile.mentor};
+			settings.config = {
+				"fullname": coursedata.fullname, 
+				"include": coursedata.include.mentor, 
+				"layoutelement": layoutElementId.mentor, 
+				"defaultinclude": defaultIncludeFile.mentor
+			};
 		}
 		
 		callback();
 	}
+
+	function _clearWelcomeLetter() {
+		var elemContents = document.getElementById('contents');
+		while (elemContents.firstChild) {
+			elemContents.removeChild(elemContents.firstChild);
+		}
+	}	
 	
+	/*---------------------------------------
+	* use settings.config to load HTML include files and replace template variables
+	* NOTE: template variables currently can't be used in the "main" section
+	*----------------------------------------*/
 	function _renderWelcomeLetterMain() {
 		var config = settings.config;
 		var fullname = config.fullname;
@@ -432,7 +454,7 @@ const app = function () {
 	}
 	
 	function _replaceAllTemplateVariables(elemId) {
-		var templateElements = document.getElementById(elemId).getElementsByClassName(TEMPLATE_CLASS);
+		var templateElements = document.getElementById(elemId).getElementsByClassName(TEMPLATEVAR_CLASS);
 		for (var i = 0; i < templateElements.length; i++) {
 			var ihtml = templateElements.item(i).innerHTML;
 			templateElements.item(i).innerHTML = _replaceTemplateVariables(ihtml);
@@ -455,7 +477,10 @@ const app = function () {
 
 		return str;
 	}
-	
+
+	/*---------------------------------------
+	* utility functions
+	*----------------------------------------*/
 	function _enableControls(enable) {
 		page.courseselect.disabled = !enable;
 		page.studentwelcome.disabled = !enable;

@@ -20,12 +20,6 @@ body {
 	font-style: italic;
 }
 
-.wl-logo {
-	margin-left: 2px;
-	margin-top: 2px;
-	margin-bottom: -5px;
-}
-
 select.wl-control {
 	font-size: 12px;
 }
@@ -36,9 +30,9 @@ label.wl-radio {
 }
 
 img.wl-instructor-info {
-	width: 75px;
+	width: 65px;
 	height: auto;
-	padding-left: 8px;
+	padding-bottom: 4px;
 }
 
 .wl-section-label {
@@ -59,29 +53,37 @@ img.wl-instructor-info {
 	border-style: solid;
 	border-width: 1px;
 	border-radius: 6px;
-	
 }
 
 .wl-bblink {
 	color: var(--wl-color2);
 	background-color: var(--wl-color4);
-	border-color: var(--wl-color2);
-	border-style: solid;
-	border-width: 1px;
+	border: 1px solid var(--wl-color2);
 	border-radius: 6px;
 	padding-left: 2px;
 	padding-right: 2px;
 }
-/*
-.wl-keypoints {
-	display: inline-block;
-	background-color: white;
-	border-color: var(--wl-color1);
-	border-style: solid;
-	border-width: 1px;
-	border-radius: 8px;
-	padding-top: 4px;
-	padding-left: 8px;
-	padding-right: 8px;
+
+.wl-logo {
+	margin-left: 2px;
+	margin-top: 2px;
+	margin-bottom: 4px;
 }
-*/
+
+.wl-contact {
+	background-color: white;
+    border: 1px solid var(--wl-color4);
+	border-radius: 6px;
+}
+
+.wl-keypoints {
+	background-color: white;
+    border: 1px solid var(--wl-color4);
+	border-radius: 6px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.wl-keypoints-list {
+	margin-bottom: 4px;
+}
