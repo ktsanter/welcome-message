@@ -6,8 +6,8 @@ const app = function () {
 	const PAGE_TITLE = 'Welcome letter message generator'
 	const PAGE_VERSION = 'v0.1';
 		
-	//const API_BASE = 'https://script.google.com/macros/s/AKfycbymCm2GsamiaaWMfMr_o3rK579rz988lFK5uaBaRXVJH_8ViDg/exec';
-	//const API_KEY = 'MVstandardsAPI';
+	const API_BASE = 'https://script.google.com/macros/s/AKfycbwuO-prQVmE_8HetNfg67dqK4Jie7eetp_8j4Bo5HcHGASf_5GN/exec';
+	const API_KEY = 'MVwelcomemessageAPI';
 	
 	const NO_COURSE = 'NO_COURSE';
 	const TEMPLATEVAR_CLASS = 'wl-has-template-item';
@@ -65,162 +65,9 @@ const app = function () {
 		}
 	};
 	
-	var courseInformation = {
-		"game_design": {
-			"fullname": "Advanced Programming: Game Design & Animation",
-			"include": {
-				"student": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"expectations1": USE_DEFAULT,
-					"expectations2": USE_DEFAULT,
-					"keypoints": "msg_keypoints_student_game_design.html"
-				},
-				"mentor": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"resources": USE_DEFAULT,
-					"expectations": USE_DEFAULT,
-					"response": USE_DEFAULT,
-					"specialpop": USE_DEFAULT,
-					"keypoints": "msg_keypoints_mentor_game_design.html"
-				}
-			}
-		},
-		"javascript": {
-			"fullname": "Advanced Web Design: JavaScript",
-			"include": {
-				"student": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"expectations1": USE_DEFAULT,
-					"expectations2": USE_DEFAULT,
-					"keypoints": "msg_keypoints_student_javascript.html"
-				},
-				"mentor": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"resources": USE_DEFAULT,
-					"expectations": USE_DEFAULT,
-					"response": USE_DEFAULT,
-					"specialpop": USE_DEFAULT,
-					"keypoints": "msg_keypoints_mentor_javascript.html"
-				}
-			}
-		},
-		"apcsp1": {
-			"fullname": "AP Computer Science Principles (Sem 1)",
-			"include": {
-				"student": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"expectations1": USE_DEFAULT,
-					"expectations2": USE_DEFAULT,
-					"keypoints": "msg_keypoints_student_apcsp1.html"
-				},
-				"mentor": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"resources": USE_DEFAULT,
-					"expectations": USE_DEFAULT,
-					"response": USE_DEFAULT,
-					"specialpop": USE_DEFAULT,
-					"keypoints": "msg_keypoints_mentor_apcsp1.html"
-				}
-			}
-		},
-		"html_css": {
-			"fullname": "Basic Web Design: HTML & CSS",
-			"include": {
-				"student": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"expectations1": USE_DEFAULT,
-					"expectations2": USE_DEFAULT,
-					"keypoints": "msg_keypoints_student_html_css.html"
-				},
-				"mentor": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"resources": USE_DEFAULT,
-					"expectations": USE_DEFAULT,
-					"response": USE_DEFAULT,
-					"specialpop": USE_DEFAULT,
-					"keypoints": "msg_keypoints_mentor_html_css.html"
-				}
-			}
-		},
-		"diglit": {
-			"fullname": "Digital Literacy & Programming",
-			"include": {
-				"student": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"expectations1": USE_DEFAULT,
-					"expectations2": USE_DEFAULT,
-					"keypoints": "msg_keypoints_student_diglit.html"
-				},
-				"mentor": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"resources": USE_DEFAULT,
-					"expectations": USE_DEFAULT,
-					"response": USE_DEFAULT,
-					"specialpop": USE_DEFAULT,
-					"keypoints": "msg_keypoints_mentor_diglit.html"
-				}
-			}
-		},
-		"fpa": {
-			"fullname": "Foundations of Programming",
-			"include": {
-				"student": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"expectations1": USE_DEFAULT,
-					"expectations2": USE_DEFAULT,
-					"keypoints": "msg_keypoints_student_fpa.html"
-				},
-				"mentor": {
-					"main": USE_DEFAULT,
-					"contact": USE_DEFAULT,
-					"generalinfo": USE_DEFAULT,
-					"welcome": USE_DEFAULT,
-					"resources": USE_DEFAULT,
-					"expectations": USE_DEFAULT,
-					"response": USE_DEFAULT,
-					"specialpop": USE_DEFAULT,
-					"keypoints": "msg_keypoints_mentor_fpa.html"
-				}
-			}
-		}
-	};
-
-	/*---------------------------------------
-	* get things going
-	*----------------------------------------*/
+	//---------------------------------------
+	// get things going
+	//----------------------------------------
 	function init () {
 		page.header = document.getElementById('header');
 		page.header.toolname = document.getElementById('toolname');
@@ -236,20 +83,20 @@ const app = function () {
 			_setNotice('Failed to generate welcome letter - invalid parameters');
 		} else {
 			if (settings.navmode) {
-				_initHeader();
+				_getCourseList(_initHeader);
 			} else {
 				_generateWelcomeLetter();
 			}
 		}
 	}
 	
-	/*---------------------------------------
-	* query params:
-	*    navmode: display course dropdown and student/mentor options (other params ignored if navmode)
-	*    coursekey:  short name for course (required unless navmode)
-	*    student: make student welcome (either this or mentor is required unless navmode)
-	*    mentor: make mentor welcome (either this or student is required unless navmode)
-	*----------------------------------------*/
+	//-------------------------------------------------------------------------------------
+	// query params:
+	//    navmode: display course dropdown and student/mentor options (other params ignored if navmode)
+	//    coursekey:  short name for course (required unless navmode)
+	//    student: make student welcome (either this or mentor is required unless navmode)
+	//    mentor: make mentor welcome (either this or student is required unless navmode)
+	//-------------------------------------------------------------------------------------
 	function _initializeSettings() {
 		var result = false;
 
@@ -281,10 +128,10 @@ const app = function () {
 		
 		return result;
 	}
-
-	/*---------------------------------------
-	* initialization of output page including optional controls section for navmode
-	*----------------------------------------*/
+	
+	//------------------------------------------------------------------------------
+	// initialization of output page including optional controls section for navmode
+	//------------------------------------------------------------------------------
 	function _initHeader() {
 		page.header.classList.add('wl-header');
 				
@@ -309,10 +156,11 @@ const app = function () {
 		elemNoCourseOption.text = '<select a course>';
 		elemCourseSelect.appendChild(elemNoCourseOption);
 		
-		for (var key in courseInformation) {
+		var courseList = settings.courseList;
+		for (var i = 0; i <  courseList.length; i++) {
 			var elemOption = document.createElement('option');
-			elemOption.value = key;
-			elemOption.text = courseInformation[key].fullname;
+			elemOption.value = courseList[i].coursekey;
+			elemOption.text = courseList[i].fullname;
 			elemCourseSelect.appendChild(elemOption);
 		}
 
@@ -368,33 +216,11 @@ const app = function () {
 		return btn;
 	}
 	
-	/*---------------------------------------
-	* gather config information and call to start rendering
-	*----------------------------------------*/
+	//---------------------------------------------------------
+	// gather config information and call to start rendering
+	//--------------------------------------------------------
 	function _generateWelcomeLetter() {
-		_getWelcomeLetterConfiguration(_renderWelcomeLetterMain);
-	}
-	
-	function _getWelcomeLetterConfiguration(callback) {
-		var coursedata = courseInformation[settings.coursekey]; // TODO: retrieve using Web API
-		
-		if (settings.studentmentor == 'student') {
-			settings.config = {
-				"fullname": coursedata.fullname, 
-				"include": coursedata.include.student, 
-				"layoutelement": layoutElementId.student, 
-				"defaultinclude": defaultIncludeFile.student
-			};
-		} else {
-			settings.config = {
-				"fullname": coursedata.fullname, 
-				"include": coursedata.include.mentor, 
-				"layoutelement": layoutElementId.mentor, 
-				"defaultinclude": defaultIncludeFile.mentor
-			};
-		}
-		
-		callback();
+		_getWelcomeLetterLayout(_renderWelcomeLetterMain);
 	}
 
 	function _clearWelcomeLetter() {
@@ -404,34 +230,36 @@ const app = function () {
 		}
 	}	
 	
-	/*---------------------------------------
-	* use settings.config to load HTML include files and replace template variables
-	* NOTE: template variables currently can't be used in the "main" section
-	*----------------------------------------*/
+	//---------------------------------------------------------------------------------
+	// use settings.config to load HTML include files and replace template variables
+	// NOTE: template variables currently can't be used in the "main" section
+	//--------------------------------------------------------------------------------
 	function _renderWelcomeLetterMain() {
-		var config = settings.config;
-		var fullname = config.fullname;
-		var include = config.include.main;
-		var layoutelement = config.layoutelement.main;
-		var defaultinclude = config.defaultinclude.main;
+		var fulllayout = settings.fulllayout;
+		var fullname = fulllayout.fullname;
+		var layouttype = fulllayout.layouttype;
+		var layoutMain = fulllayout.layout.main;
+		var layoutelementMain = layoutElementId[layouttype].main;
+		var defaultincludeMain = defaultIncludeFile[layouttype].main;
 		
-		var filename = include;
-		if (include == USE_DEFAULT) filename = defaultinclude
+		var filename = layoutMain;
+		if (filename == USE_DEFAULT) filename = defaultincludeMain;
 		
-		_includeHTML(layoutelement, settings.include + filename, _renderWelcomeLetterSubsections);
+		_includeHTML(layoutelementMain, settings.include + filename, _renderWelcomeLetterSubsections);
 	}
 	
 	function _renderWelcomeLetterSubsections() {
-		var config = settings.config;
-		var fullname = config.fullname;
-		var include = config.include;
-		var layoutelement = config.layoutelement;
-		var defaultinclude = config.defaultinclude;
-		
-		for (var key in include) {
+		var fulllayout = settings.fulllayout;
+		var fullname = fulllayout.fullname;
+		var layouttype = fulllayout.layouttype;
+		var layout = fulllayout.layout
+		var layoutelement = layoutElementId[layouttype];
+		var defaultinclude = defaultIncludeFile[layouttype];
+
+		for (var key in layout) {
 			if (key != 'main') {
 				var elementId = layoutelement[key];
-				var filename = include[key];
+				var filename = layout[key];
 				var defaultfilename = defaultinclude[key];
 				if (filename == USE_DEFAULT) filename = defaultfilename;
 				_includeHTML(elementId, settings.include + filename, _replaceAllTemplateVariables);
@@ -473,14 +301,14 @@ const app = function () {
 	}
 	
 	function _replacementSingleTemplateVariable(str) {
-		if (str == '[[coursefullname]]') return courseInformation[settings.coursekey].fullname;
+		if (str == '[[coursefullname]]') return settings.fulllayout.fullname;
 
 		return str;
 	}
 
-	/*---------------------------------------
-	* utility functions
-	*----------------------------------------*/
+	//---------------------------------------
+	// utility functions
+	//----------------------------------------
 	function _enableControls(enable) {
 		page.courseselect.disabled = !enable;
 		page.studentwelcome.disabled = !enable;
@@ -511,9 +339,72 @@ const app = function () {
 		if (page.courseselect.value == NO_COURSE) return;
 
 		settings.studentmentor = evt.target.id;
+		_clearWelcomeLetter();
 		_generateWelcomeLetter();
 	}
 
+	//--------------------------------------------------------------
+	// build URL for use with Google sheet web API
+	//--------------------------------------------------------------
+		function _buildApiUrl (datasetname, coursekey, layouttype) {
+		let url = API_BASE;
+		url += '?key=' + API_KEY;
+		url += datasetname && datasetname !== null ? '&dataset=' + datasetname : '';
+		url += coursekey && coursekey !== null ? '&coursekey=' + coursekey : '';
+		url += layouttype && layouttype !== null ? '&layouttype=' + layouttype : '';
+		//console.log('buildApiUrl: url=' + url);
+		
+		return url;
+	}
+	
+	//--------------------------------------------------------------
+	// use Google Sheet web API to get course list
+	//--------------------------------------------------------------
+	function _getCourseList (callback) {
+		_setNotice('loading course list...');
+
+		fetch(_buildApiUrl('courselist'))
+			.then((response) => response.json())
+			.then((json) => {
+				//console.log('json.status=' + json.status);
+				if (json.status !== 'success') {
+					_setNotice(json.message);
+				}
+				//console.log('json.data: ' + JSON.stringify(json.data));
+				settings.courseList = json.data.courselist;
+				_setNotice('');
+				callback();
+			})
+			.catch((error) => {
+				_setNotice('Unexpected error loading course list');
+				console.log(error);
+			})
+	}
+	
+	//--------------------------------------------------------------
+	// use Google Sheet web API to get layout for course
+	//--------------------------------------------------------------
+	function _getWelcomeLetterLayout (callback) {
+		_setNotice('loading layout for course...');
+
+		fetch(_buildApiUrl('layout', settings.coursekey, settings.studentmentor))
+			.then((response) => response.json())
+			.then((json) => {
+				//console.log('json.status=' + json.status);
+				if (json.status !== 'success') {
+					_setNotice(json.message);
+				}
+				//console.log('json.data: ' + JSON.stringify(json.data));
+				settings.fulllayout = json.data;
+				_setNotice('');
+				callback();
+			})
+			.catch((error) => {
+				_setNotice('Unexpected error loading layout');
+				console.log(error);
+			})
+	}
+	
 	return {
 		init: init
  	};
