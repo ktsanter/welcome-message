@@ -29,12 +29,6 @@ label.wl-radio {
 	margin-right: 6px;
 }
 
-img.wl-instructor-info {
-	width: 65px;
-	height: auto;
-	padding-bottom: 4px;
-}
-
 .wl-section-label {
 	color: white;
 	background-color: var(--wl-color4);
@@ -70,10 +64,20 @@ img.wl-instructor-info {
 	margin-bottom: 4px;
 }
 
+img.wl-instructor-info {
+	width: 65px;
+	height: auto;
+	padding-bottom: 4px;
+}
+
 .wl-contact {
 	background-color: white;
     border: 1px solid var(--wl-color4);
 	border-radius: 6px;
+}
+
+.wl-contactdetails {
+	max-width: inherit;
 }
 
 .wl-keypoints {
