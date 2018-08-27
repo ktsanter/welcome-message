@@ -15,28 +15,27 @@ const app = function () {
 	const page = {};
 	const settings = {
 		"include": "./include/",
-		"studentinclude": "./include/student/",
-		"mentorinclude": "./include/mentor/"
+		"standardexpectations": {"elementid": "msg_exp1", "file": "msg_student_exp1.html"},
+		"apexpectations": {"elementid": "msg_exp1", "file": "msg_student_exp1_ap.html"}
 	};
 	
 	const generalInfo = {
 		"student": {
 			"main": {"elementid": "contents", "file": "msg_student_main.html"},
 			"contact": {"elementid": "msg_student_contact", "file": "msg_student_contact.html"},
-			"generalinfo": {"elementid": "msg_generalinfo", "file": "msg_student_generalinfo.html"},
-			"welcome": {"elementid": "msg_welcome", "file": "msg_student_welcome.html"},
-			"expectations1": {"elementid": "msg_exp1", "file": "msg_student_exp1.html"},
-			"expectations2": {"elementid": "msg_exp2", "file": "msg_student_exp2.html"}
+			"generalinfo": {"elementid": "msg_generalinfo", "file":  "msg_student_generalinfo.html"},
+			"welcome": {"elementid": "msg_welcome", "file":  "msg_student_welcome.html"},
+			"expectations2": {"elementid": "msg_exp2", "file":  "msg_student_exp2.html"}
 		},
 		"mentor": {
-			"main": {"elementid": "contents", "file": "msg_mentor_main.html"},
-			"contact": {"elementid": "msg_mentor_contact", "file": "msg_mentor_contact.html"},
-			"generalinfo": {"elementid": "msg_mentor_generalinfo", "file": "msg_mentor_generalinfo.html"},
-			"welcome": {"elementid": "msg_mentor_welcome", "file": "msg_mentor_welcome.html"},
-			"resources": {"elementid": "msg_mentor_resources", "file": "msg_mentor_resources.html"},
-			"expectations": {"elementid": "msg_mentor_exp1", "file": "msg_mentor_exp1.html"},
-			"response": {"elementid": "msg_mentor_response", "file": "msg_mentor_response.html"},
-			"specialpop": {"elementid": "msg_mentor_specialpop", "file": "msg_mentor_specialpop.html"}
+			"main": {"elementid": "contents", "file":  "msg_mentor_main.html"},
+			"contact": {"elementid": "msg_mentor_contact", "file":  "msg_mentor_contact.html"},
+			"generalinfo": {"elementid": "msg_mentor_generalinfo", "file":  "msg_mentor_generalinfo.html"},
+			"welcome": {"elementid": "msg_mentor_welcome", "file":  "msg_mentor_welcome.html"},
+			"resources": {"elementid": "msg_mentor_resources", "file":  "msg_mentor_resources.html"},
+			"expectations": {"elementid": "msg_mentor_exp1", "file":  "msg_mentor_exp1.html"},
+			"response": {"elementid": "msg_mentor_response", "file":  "msg_mentor_response.html"},
+			"specialpop": {"elementid": "msg_mentor_specialpop", "file":  "msg_mentor_specialpop.html"}
 		}		
 	}
 
@@ -45,10 +44,11 @@ const app = function () {
 			"fullname": "Advanced Programming: Game Design & Animation",
 			"include": {
 				"student": [
-					{"elementid": "msg_student_keypoints", "file": "msg_student_keypoints_gamedesign.html"}
+					{"elementid": "msg_exp1", "file":  settings.standardexpectations.file},
+					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_game_design.html"}
 				],
 				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file": "msg_mentor_keypoints_gamedesign.html"}
+					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_game_design.html"}
 				]
 			}				
 		},
@@ -56,26 +56,35 @@ const app = function () {
 			"fullname": "Advanced Web Design: JavaScript",
 			"include": {
 				"student": [
-					{"elementid": "msg_student_keypoints", "file": "msg_student_keypoints_javascript.html"}
+					{"elementid": "msg_exp1", "file":  settings.standardexpectations.file},
+					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_javascript.html"}
 				],
 				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file": "msg_mentor_keypoints_javascript.html"}
+					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_javascript.html"}
 				]
 			}				
 		},
 		"apcsp1": {
 			"fullname": "AP Computer Science Principles (Sem 1)",
-			"studentkeypoints": "",
-			"mentorkeypoints": ""
+			"include": {
+				"student": [
+					{"elementid": "msg_exp1", "file":  settings.apexpectations.file},
+					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_apcsp1.html"}
+				],
+				"mentor": [
+					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_apcsp1.html"}
+				]
+			}
 		},
 		"html_css": {
 			"fullname": "Basic Web Design: HTML & CSS",
 			"include": {
 				"student": [
-					{"elementid": "msg_student_keypoints", "file": "msg_student_keypoints_apcsp1.html"}
+					{"elementid": "msg_exp1", "file":  settings.standardexpectations.file},
+					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_html_css.html"}
 				],
 				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file": "msg_mentor_keypoints_apcsp1.html"}
+					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_html_css.html"}
 				]
 			}				
 		},
@@ -83,10 +92,11 @@ const app = function () {
 			"fullname": "Digital Literacy & Programming",
 			"include": {
 				"student": [
-					{"elementid": "msg_student_keypoints", "file": "msg_student_keypoints_diglit.html"}
+					{"elementid": "msg_exp1", "file":  settings.standardexpectations.file},
+					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_diglit.html"}
 				],
 				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file": "msg_mentor_keypoints_diglit.html"}
+					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_diglit.html"}
 				]
 			}				
 		},
@@ -94,10 +104,11 @@ const app = function () {
 			"fullname": "Foundations of Programming",
 			"include": {
 				"student": [
-					{"elementid": "msg_student_keypoints", "file": "msg_student_keypoints_fpa.html"}
+					{"elementid": "msg_exp1", "file":  settings.standardexpectations.file},
+					{"elementid": "msg_student_keypoints", "file":  "msg_keypoints_student_fpa.html"}
 				],
 				"mentor": [
-					{"elementid": "msg_mentor_keypoints", "file": "msg_mentor_keypoints_fpa.html"}
+					{"elementid": "msg_mentor_keypoints", "file":  "msg_keypoints_mentor_fpa.html"}
 				]
 			}				
 		}
@@ -262,57 +273,47 @@ const app = function () {
 	}
 	
 	function _generateStudentWelcomeLetter() {
-		_includeHTMLLookup(generalInfo.student.main, settings.studentinclude, _loadStudentSubsections);
+		var item = generalInfo.student.main;
+		_includeHTML(item.elementid, settings.include + item.file, _loadStudentSubsections);
+	}
+	
+	function _generateMentorWelcomeLetter() {
+		var item = generalInfo.mentor.main;
+		_includeHTML(item.elementid, settings.include + item.file, _loadMentorSubsections);
 	}
 	
 	function _loadStudentSubsections(elemId) {		
-		var studentIncludePath = settings.studentinclude;
-
 		// general info
 		for (var key in generalInfo.student) {
 			if (key != 'main') {
 				var item = generalInfo.student[key];
-				_includeHTMLLookup(item, studentIncludePath, _replaceAllTemplateVariables);
-				}
+				_includeHTML(item.elementid, settings.include + item.file, _replaceAllTemplateVariables);
+			}
 		}
 		
 		// course specific info
-		var studentSpecificsPath = studentIncludePath + settings.coursekey + '/' ;
 		var includeItems = courseInfo[settings.coursekey].include.student;
-
 		for (var i = 0; i < includeItems.length; i++) {
 			var item = includeItems[i];
-			_includeHTMLLookup(item, studentSpecificsPath, _replaceAllTemplateVariables);
+			_includeHTML(item.elementid, settings.include + item.file, _replaceAllTemplateVariables);
 		}
 	}
 	
-	function _generateMentorWelcomeLetter() {
-		_includeHTMLLookup(generalInfo.mentor.main, settings.mentorinclude, _loadMentorSubsections);
-	}
-	
 	function _loadMentorSubsections(elemId) {
-		var mentorIncludePath = settings.mentorinclude;
-		
 		// general info
 		for (var key in generalInfo.mentor) {
 			if (key != 'main') {
 				var item = generalInfo.mentor[key];
-				_includeHTMLLookup(item, mentorIncludePath, _replaceAllTemplateVariables);
+				_includeHTML(item.elementid, settings.include + item.file, _replaceAllTemplateVariables);
 			}
 		}
 
 		// course specific info
-		var mentorSpecificsPath = mentorIncludePath + settings.coursekey + '/' ;
 		var includeItems = courseInfo[settings.coursekey].include.mentor;
-
 		for (var i = 0; i < includeItems.length; i++) {
 			var item = includeItems[i];
-			_includeHTMLLookup(item, mentorSpecificsPath, _replaceAllTemplateVariables);
+			_includeHTML(item.elementid, settings.include + item.file, _replaceAllTemplateVariables);
 		}
-	}
-	
-	function _includeHTMLLookup(info, path, callback) {
-		_includeHTML(info.elementid, path + info.file, callback);
 	}
 	
 	function _includeHTML(elemId, url, callback) {
