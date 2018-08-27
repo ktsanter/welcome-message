@@ -1,6 +1,5 @@
 //
-// TODO: move courseInfo to Google Sheet and deploy web API
-// TODO: get course list from Web API
+// TODO: change API from "student" and "mentor" to "layouttype=student" and "layouttype=mentor"
 //
 const app = function () {
 	const PAGE_TITLE = 'Welcome letter message generator'
