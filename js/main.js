@@ -10,6 +10,7 @@ const app = function () {
 	
 	const NO_COURSE = 'NO_COURSE';
 	const TEMPLATEVAR_CLASS = 'wl-has-template-item';
+	const APCOURSE_CLASS = 'wl-apcourse';
 	
 	const USE_DEFAULT = 'USE_DEFAULT';
 	
@@ -49,7 +50,7 @@ const app = function () {
 			"welcome": "msg_student_welcome.html",
 			"expectations1": "msg_student_exp1.html",
 			"expectations2": "msg_student_exp2.html",
-			"keypoints": ""
+			"keypoints": "msg_student_keypoints.html"
 		},
 		"mentor": {
 			"main": "msg_mentor_main.html",
@@ -60,7 +61,38 @@ const app = function () {
 			"expectations": "msg_mentor_exp1.html",
 			"response": "msg_mentor_response.html",
 			"specialpop": "msg_mentor_specialpop.html",
-			"keypoints": ""
+			"keypoints": "msg_mentor_keypoints.html"
+		}
+	};
+	
+	const defaultKeypoints = {
+		"student": {
+			"lead": [
+				"There are no due dates other than the end of the semester, however you should strive to follow the pacing guide."
+			],
+			"lead_ap": [
+				"There are weekly due dates for assignments, with penalties for late assignments."
+			],
+			"trail": [
+				"Details for policies can be found in the <span class=\"wl-bblink\">Course Info</span> section.  Please contact me anytime you have questions."
+			],
+			"trail_ap": [
+				"Details for policies can be found in the <span class=\"wl-bblink\">Course Info</span> section.  Please contact me anytime you have questions."
+			]
+		},
+		"mentor": {
+			"lead": [
+				"There are no due dates other than the end of the semester, however students should strive to follow the pacing guide."
+			],
+			"lead_ap": [
+				"There are weekly due dates for assignments, with penalties for late assignments."
+			],
+			"trail": [
+				"Details for policies can be found in the <span class=\"wl-bblink\">Course Info</span> section.  Please contact me anytime you have questions."
+			],
+			"trail_ap": [
+				"Details for policies can be found in the <span class=\"wl-bblink\">Course Info</span> section.  Please contact me anytime you have questions."
+			]
 		}
 	};
 	
@@ -226,7 +258,7 @@ const app = function () {
 	
 	//---------------------------------------------------------------------------------
 	// use settings.config to load HTML include files and replace template variables
-	// NOTE: template variables currently can't be used in the "main" section
+	// NOTE: template variables currently can't be used in the "main" or "keypoints" sections
 	//--------------------------------------------------------------------------------
 	function _renderWelcomeLetterMain() {
 		var fulllayout = settings.fulllayout;
@@ -235,6 +267,8 @@ const app = function () {
 		var layoutMain = fulllayout.layout.main;
 		var layoutelementMain = layoutElementId[layouttype].main;
 		var defaultincludeMain = defaultIncludeFile[layouttype].main;
+		
+		settings.keypoints = fulllayout.keypoints;
 		
 		var filename = layoutMain;
 		if (filename == USE_DEFAULT) filename = defaultincludeMain;
@@ -256,11 +290,49 @@ const app = function () {
 				var filename = layout[key];
 				var defaultfilename = defaultinclude[key];
 				if (filename == USE_DEFAULT) filename = defaultfilename;
-				_includeHTML(elementId, settings.include + filename, _replaceAllTemplateVariables);
+				if (key == 'keypoints') {
+					_includeHTML(elementId, settings.include + filename, _renderKeypoints);
+				} else {
+					_includeHTML(elementId, settings.include + filename, _replaceAllTemplateVariables);
+				}
 			}
 		}
 	}
 	
+	function _renderKeypoints() {
+		var elemList = document.getElementById('listKeypoints');
+		var apCourse = elemList.classList.contains(APCOURSE_CLASS);
+
+		var leadKeypoints = defaultKeypoints[settings.layouttype].lead;
+		if (apCourse) leadKeypoints = defaultKeypoints[settings.layouttype].lead_ap;
+
+		var trailKeypoints = defaultKeypoints[settings.layouttype].trail;
+		if (apCourse) trailKeypoints = defaultKeypoints[settings.layouttype].trail_ap;
+		
+		var courseKeypointKeys = ['exams', 'passwords', 'proctoring', 'assessment_retake', 'assignment_resubmit'];
+		var courseKeypoints = settings.keypoints;
+
+		for (var i = 0; i < leadKeypoints.length; i++) {
+			elemList.appendChild(_createKeypointListItem(leadKeypoints[i]));
+		}
+		
+		for (var i = 0; i < courseKeypointKeys.length; i++) {
+			var keypoint = courseKeypoints[courseKeypointKeys[i]];
+			if (keypoint != '') {
+				elemList.appendChild(_createKeypointListItem(keypoint));
+			}
+		}
+		
+		for (var i = 0; i < trailKeypoints.length; i++) {
+			elemList.appendChild(_createKeypointListItem(trailKeypoints[i]));
+		}
+	}
+	
+	function _createKeypointListItem(txt) {
+		var elemOption = document.createElement('li');
+		elemOption.innerHTML = txt;
+		return elemOption;
+	}	
 	
 	function _includeHTML(elemId, url, callback) {
 		//console.log('_includeHTML: elemId=' + elemId + ' url=' + url); //+ ' cb=' + callback);
