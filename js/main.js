@@ -102,7 +102,7 @@ const app = function () {
 		
 		settings.navmode = false;
 		settings.coursekey = NO_COURSE;
-		settings.studentmentor = '';
+		settings.layouttype = '';
 			
 		var urlParams = new URLSearchParams(window.location.search);
 		params.navmode = urlParams.has('navmode');
@@ -111,11 +111,12 @@ const app = function () {
 		settings.navmode = params.navmode;
 
 		if (params.navmode) {
+			settings.layouttype = 'student';
 			result = true;
 			
 		} else if (params.coursekey != null && params.layouttype != null) {
 			settings.coursekey = params.coursekey;
-			settings.studentmentor = params.layouttype;
+			settings.layouttype = params.layouttype;
 			result = true;
 		} 
 		
@@ -331,7 +332,7 @@ const app = function () {
 	function _studentMentorChange(evt) {
 		if (page.courseselect.value == NO_COURSE) return;
 
-		settings.studentmentor = evt.target.id;
+		settings.layouttype = evt.target.id
 		_clearWelcomeLetter();
 		_generateWelcomeLetter();
 	}
@@ -379,8 +380,7 @@ const app = function () {
 	//--------------------------------------------------------------
 	function _getWelcomeLetterLayout (callback) {
 		_setNotice('loading layout for course...');
-
-		fetch(_buildApiUrl('layout', settings.coursekey, settings.studentmentor))
+		fetch(_buildApiUrl('layout', settings.coursekey, settings.layouttype))
 			.then((response) => response.json())
 			.then((json) => {
 				//console.log('json.status=' + json.status);
