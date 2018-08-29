@@ -437,17 +437,17 @@ const app = function () {
 	}
 		
 	function _courseSelectChanged(evt) {
-		if (page.courseselect.value == NO_COURSE) return;
-		
 		settings.coursekey = evt.target.value;
+
+		if (page.courseselect.value == NO_COURSE) return;
 		_clearWelcomeLetter();
 		_generateWelcomeLetter();
 	}
 	
 	function _studentMentorChange(evt) {
-		if (page.courseselect.value == NO_COURSE) return;
-
 		settings.layouttype = evt.target.id
+
+		if (page.courseselect.value == NO_COURSE) return;
 		_clearWelcomeLetter();
 		_generateWelcomeLetter();
 	}
