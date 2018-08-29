@@ -96,6 +96,19 @@ const app = function () {
 		}
 	};
 	
+	const templateVariableReplacements = {
+		"term": {
+			"s1": "Semester 1 (20 Weeks)",
+			"s2": "Semester 2 (20 Weeks)",
+			"t1": "Trimester 1 (13 Weeks)",
+			"t2": "Trimester 2 (14 Weeks)",
+			"t3": "Trimester 3 (13 Weeks)",
+			"summer": "Summer (10 Weeks)",
+			"essentials": "Essentials",
+			"open": "Open Entry"
+		}
+	};
+	
 	//---------------------------------------
 	// get things going
 	//----------------------------------------
@@ -126,6 +139,7 @@ const app = function () {
 	//    navmode: display course dropdown and student/mentor options (other params ignored if navmode)
 	//    coursekey:  short name for course (required unless navmode)
 	//    layout: "student" or "mentor"  (required unless navmode)
+	//    term: s1, s2, t1, t2, t3, summer, essentials, open	  (required unless navmode)
 	//-------------------------------------------------------------------------------------
 	function _initializeSettings() {
 		var result = false;
@@ -140,15 +154,18 @@ const app = function () {
 		params.navmode = urlParams.has('navmode');
 		params.coursekey = urlParams.has('coursekey') ? urlParams.get('coursekey') : null;
 		params.layouttype = urlParams.has('layout') ? urlParams.get('layout') : null;
+		params.term = urlParams.has('term') ? urlParams.get('term') : null;
 		settings.navmode = params.navmode;
 
 		if (params.navmode) {
 			settings.layouttype = 'student';
+			settings.term = 's1';
 			result = true;
 			
-		} else if (params.coursekey != null && params.layouttype != null) {
+		} else if (params.coursekey != null && params.layouttype != null && params.term != null) {
 			settings.coursekey = params.coursekey;
 			settings.layouttype = params.layouttype;
+			settings.term = params.term;
 			result = true;
 		} 
 		
@@ -164,11 +181,12 @@ const app = function () {
 		page.header.toolname.innerHTML = PAGE_TITLE;
 		
 		var elemCourseSelect = _createCourseSelect();
-		
-		var elemStudentMentor = _createStudentMentorChoice();
+		var elemLayout = _createLayoutChoice();
+		var elemTerm = _createTermChoice();
 			
 		page.header.courses.appendChild(elemCourseSelect);
-		page.header.controls.appendChild(elemStudentMentor);
+		page.header.controls.appendChild(elemLayout);
+		page.header.controls.appendChild(elemTerm);
 	}
 	
 	function _createCourseSelect() {
@@ -195,43 +213,69 @@ const app = function () {
 		return elemCourseSelect;
 	}
 		
-	function _createStudentMentorChoice() {
+	function _createLayoutChoice() {
+		var layoutChoices = ['student', 'mentor'];
+		var elementName = 'student_mentor';
+		var handler = _studentMentorChange;
+		var className = 'wl-radio';
+		
 		var elemWrapper = document.createElement('span');
-		var elemStudent = document.createElement('input');
-		var elemMentor = document.createElement('input');
-		var elemStudentLabel = document.createElement('label');
-		var elemMentorLabel = document.createElement('label');
+		elemWrapper.classList.add('container');
 		
-		elemStudent.id = 'student'
-		elemStudent.type='radio';
-		elemStudent.name = 'student_mentor';
-		elemStudent.checked = true;
-		elemStudent.addEventListener('change',  _studentMentorChange, false);
-		
-		elemMentor.id = 'mentor';
-		elemMentor.type='radio';
-		elemMentor.name = 'student_mentor';
-		elemMentor.addEventListener('change',  _studentMentorChange, false);
-		
-		elemStudentLabel.htmlFor = 'student';
-		elemStudentLabel.innerHTML = 'student';
-		elemStudentLabel.classList.add('wl-radio');
-		
-		elemMentorLabel.htmlFor = 'mentor';
-		elemMentorLabel.innerHTML = 'mentor';
-		elemMentorLabel.classList.add('wl-radio');
-		
-		elemWrapper.appendChild(elemStudent);
-		elemWrapper.appendChild(elemStudentLabel);
-		elemWrapper.appendChild(elemMentor);
-		elemWrapper.appendChild(elemMentorLabel);
-
-		page.studentwelcome = elemStudent;
-		page.mentorwelcome = elemMentor;
+		for (var i = 0; i < layoutChoices.length; i++) {
+			var choice = layoutChoices[i];
+			
+			var elemChoice = document.createElement('input');
+			elemChoice.id = choice;
+			elemChoice.type = 'radio';
+			elemChoice.name = elementName;
+			if (i == 0) elemChoice.checked = true;
+			elemChoice.addEventListener('change', handler, false);
+			
+			var elemLabel = document.createElement('label');
+			elemLabel.htmlFor = choice;
+			elemLabel.innerHTML = choice;
+			elemLabel.classList.add(className);
+			
+			elemWrapper.appendChild(elemChoice);
+			elemWrapper.appendChild(elemLabel);
+		}
 		
 		return elemWrapper;
 	}
 	
+		
+	function _createTermChoice() {
+		var layoutChoices = ['s1', 's2', 't1', 't2', 't3', 'summer', 'essentials', 'open'];
+		var elementName = 'term';
+		var handler = _termChange;
+		var className = 'wl-radio';
+		
+		var elemWrapper = document.createElement('span');
+		elemWrapper.classList.add('container');
+		
+		for (var i = 0; i < layoutChoices.length; i++) {
+			var choice = layoutChoices[i];
+			
+			var elemChoice = document.createElement('input');
+			elemChoice.id = choice;
+			elemChoice.type = 'radio';
+			elemChoice.name = elementName;
+			if (i == 0) elemChoice.checked = true;
+			elemChoice.addEventListener('change', handler, false);
+			
+			var elemLabel = document.createElement('label');
+			elemLabel.htmlFor = choice;
+			elemLabel.innerHTML = choice;
+			elemLabel.classList.add(className);
+			
+			elemWrapper.appendChild(elemChoice);
+			elemWrapper.appendChild(elemLabel);
+		}
+		
+		return elemWrapper;
+	}
+		
 	function _makeButton(id, className, label, title, listener) {
 		var btn = document.createElement('button');
 		btn.id = id;
@@ -368,19 +412,18 @@ const app = function () {
 	
 	function _replacementSingleTemplateVariable(str) {
 		if (str == '[[coursefullname]]') return settings.fulllayout.fullname;
-
+		if (str == '[[calendarsection]]') return templateVariableReplacements.term[settings.term];
+		
+		var msg = 'unmatched template variable: ' + str;
+		_setNotice(msg);
+		console.log(msg);
+		
 		return str;
 	}
 
 	//---------------------------------------
 	// utility functions
 	//----------------------------------------
-	function _enableControls(enable) {
-		page.courseselect.disabled = !enable;
-		page.studentwelcome.disabled = !enable;
-		page.mentorwelcome.disabled = !enable;
-	}
-
 	function _setNotice (label) {
 		page.notice.innerHTML = label;
 
@@ -408,7 +451,15 @@ const app = function () {
 		_clearWelcomeLetter();
 		_generateWelcomeLetter();
 	}
+	
+	function _termChange(evt) {
+		if (page.courseselect.value == NO_COURSE) return;
 
+		settings.term = evt.target.id
+		_clearWelcomeLetter();
+		_generateWelcomeLetter();
+	}
+	
 	//--------------------------------------------------------------
 	// build URL for use with Google sheet web API
 	//--------------------------------------------------------------
