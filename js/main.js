@@ -123,6 +123,9 @@ const app = function () {
 		
 		page.standards = document.getElementById('contents');
 		
+		page.header.style.display = 'none'; 
+		page.header.style.visibility = 'hidden';
+		
 		if (!_initializeSettings()) {
 			_setNotice('Failed to generate welcome letter - invalid parameters');
 		} else {
@@ -187,6 +190,9 @@ const app = function () {
 		page.header.courses.appendChild(elemCourseSelect);
 		page.header.controls.appendChild(elemLayout);
 		page.header.controls.appendChild(elemTerm);
+		
+		page.header.style.display = 'block';
+		page.header.style.visibility = 'visible';
 	}
 	
 	function _createCourseSelect() {
