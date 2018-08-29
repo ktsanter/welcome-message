@@ -453,9 +453,9 @@ const app = function () {
 	}
 	
 	function _termChange(evt) {
-		if (page.courseselect.value == NO_COURSE) return;
-
 		settings.term = evt.target.id
+
+		if (page.courseselect.value == NO_COURSE) return;
 		_clearWelcomeLetter();
 		_generateWelcomeLetter();
 	}
