@@ -188,12 +188,12 @@ const app = function () {
 		var elemCourseSelect = _createCourseSelect();
 		var elemLayout = _createLayoutChoice();
 		var elemTerm = _createTermChoice();
-		var elemEmbedControl = _createEmbedControl();
+		var elemLinkControl = _createLinkControl();
 			
 		page.header.courses.appendChild(elemCourseSelect);
 		page.header.controls.appendChild(elemLayout);
 		page.header.controls.appendChild(elemTerm);
-		page.header.controls.appendChild(elemEmbedControl);
+		page.header.controls.appendChild(elemLinkControl);
 		
 		page.header.style.display = 'block';
 		page.header.style.visibility = 'visible';
@@ -286,11 +286,11 @@ const app = function () {
 		return elemWrapper;
 	}
 		
-	function _createEmbedControl() {
+	function _createLinkControl() {
 		var elemWrapper = document.createElement('span');
 		elemWrapper.classList.add('container');
 		
-		elemWrapper.appendChild(_makeButton('btnEmbed', 'wl-control', 'embed', 'copy embed code to clipboard', _handleEmbedButton));
+		elemWrapper.appendChild(_makeButton('btnLink', 'wl-control', 'link', 'copy link to clipboard', _handleLinkButton));
 		
 		return elemWrapper;
 	}
@@ -479,10 +479,10 @@ const app = function () {
 		_generateWelcomeLetter();
 	}
 	
-	function _handleEmbedButton(evt) {
+	function _handleLinkButton(evt) {
 		if (page.courseselect.value == NO_COURSE) return;
 		
-		_copyEmbedCodeToClipboard();
+		_copyLinkCodeToClipboard();
 	}
 	
 	//--------------------------------------------------------------
@@ -547,32 +547,32 @@ const app = function () {
 	}
 	
     //------------------------------------------------------------------------------------------
-    // create embed code and copy to clipboard
+    // create link code and copy to clipboard
     //------------------------------------------------------------------------------------------
-	function _copyEmbedCodeToClipboard() {
+	function _copyLinkCodeToClipboard() {
 		_setNotice('');
 				
 		var clipboardElement = page.textforclipboard;
-		clipboardElement.value = _createEmbedCode();
+		clipboardElement.value = _createLinkCode();
 		clipboardElement.style.display = 'block';
 		clipboardElement.select();
 		document.execCommand("Copy");
 		clipboardElement.selectionEnd = clipboardElement.selectionStart;
 		page.textforclipboard.style.display = 'none';
 
-		_setNotice(settings.coursekey + ' embed code copied to clipboard');
+		_setNotice('Link to welcome message for ' + settings.fulllayout.fullname + ', ' + settings.layouttype + ', ' + settings.term + ' copied to clipboard');
 	}
 	
-	function _createEmbedCode() {
-		// note the javascript link is to courseinfosizer.js in Google Drive
-		var embedCode = 'embed code for welcome message:'
-			+ ' coursekey = ' + settings.coursekey
-			+ ' layouttype = ' + settings.layouttype
-			+ ' term = ' + settings.term;
+	function _createLinkCode() {
+		var baseURL = location.protocol + '//' + location.host + location.pathname;
+		
+		var linkCode = baseURL;
+		linkCode += '?coursekey=' + settings.coursekey;
+		linkCode += '&layout=' + settings.layouttype;
+		linkCode += '&term=' + settings.term;
 
-		return embedCode;
+		return linkCode;
 	}
-
 	
 	return {
 		init: init
