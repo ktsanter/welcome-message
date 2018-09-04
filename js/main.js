@@ -1,5 +1,6 @@
 //
 // TODO: change student/mentor to layoutType
+// TODO: replace template variables in message HTML before copying
 //
 const app = function () {
 	const PAGE_TITLE = 'Welcome letter'
@@ -50,7 +51,8 @@ const app = function () {
 			"welcome": "msg_student_welcome.html",
 			"expectations1": "msg_student_exp1.html",
 			"expectations2": "msg_student_exp2.html",
-			"keypoints": "msg_student_keypoints.html"
+			"keypoints": "msg_student_keypoints.html",
+			"templatemessage": "template_student.html"
 		},
 		"mentor": {
 			"main": "msg_mentor_main.html",
@@ -61,7 +63,8 @@ const app = function () {
 			"expectations": "msg_mentor_exp1.html",
 			"response": "msg_mentor_response.html",
 			"specialpop": "msg_mentor_specialpop.html",
-			"keypoints": "msg_mentor_keypoints.html"
+			"keypoints": "msg_mentor_keypoints.html",
+			"templatemessage": "template_mentor.html"
 		}
 	};
 	
@@ -127,6 +130,9 @@ const app = function () {
 
 		page.textforclipboard = document.getElementById('text_for_clipboard');
 		page.textforclipboard.style.display = 'none';
+		
+		page.messagestage = document.getElementById('message_stage');
+		page.messagestage.style.display = 'none';
 		
 		if (!_initializeSettings()) {
 			_setNotice('Failed to generate welcome letter - invalid parameters');
@@ -291,7 +297,7 @@ const app = function () {
 		elemWrapper.classList.add('container');
 		
 		elemWrapper.appendChild(_makeButton('btnLink', 'wl-control', 'link', 'copy link to clipboard', _handleLinkButton));
-		
+		elemWrapper.appendChild(_makeButton('btnMessage', 'wl-control', 'msg', 'copy welcome message to clipboard', _handleMessageButton));
 		return elemWrapper;
 	}
 	
@@ -317,6 +323,7 @@ const app = function () {
 		while (elemContents.firstChild) {
 			elemContents.removeChild(elemContents.firstChild);
 		}
+		page.messagestage.innerHTML = '';
 	}	
 	
 	//---------------------------------------------------------------------------------
@@ -330,6 +337,7 @@ const app = function () {
 		var layoutMain = fulllayout.layout.main;
 		var layoutelementMain = layoutElementId[layouttype].main;
 		var defaultincludeMain = defaultIncludeFile[layouttype].main;
+		var messageinclude = defaultIncludeFile[layouttype].templatemessage;
 		
 		settings.keypoints = fulllayout.keypoints;
 		
@@ -337,6 +345,7 @@ const app = function () {
 		if (filename == USE_DEFAULT) filename = defaultincludeMain;
 		
 		_includeHTML(layoutelementMain, settings.include + filename, _renderWelcomeLetterSubsections);
+		_includeHTML(page.messagestage.id, settings.include + messageinclude, _replaceAllTemplateVariables);
 	}
 	
 	function _renderWelcomeLetterSubsections() {
@@ -420,7 +429,6 @@ const app = function () {
 
 	function _replaceTemplateVariables(str) {
 		var matches = str.match(/\[\[.*\]\]/);
-
 		for (var i = 0; i < matches.length; i++) {
 			var replacement = _replacementSingleTemplateVariable(matches[i]);
 			str = str.replace(matches[i], replacement);
@@ -432,7 +440,7 @@ const app = function () {
 	function _replacementSingleTemplateVariable(str) {
 		if (str == '[[coursefullname]]') return settings.fulllayout.fullname;
 		if (str == '[[calendarsection]]') return templateVariableReplacements.term[settings.term];
-		
+		if (str == '[[linktolettersite]]') return _createLinkCode();		
 		var msg = 'unmatched template variable: ' + str;
 		_setNotice(msg);
 		console.log(msg);
@@ -454,7 +462,10 @@ const app = function () {
 			page.notice.style.visibility = 'visible';
 		}
 	}
-		
+	
+	//-----------------------------------------------
+	// event handlers
+	//-----------------------------------------------	
 	function _courseSelectChanged(evt) {
 		settings.coursekey = evt.target.value;
 
@@ -483,6 +494,12 @@ const app = function () {
 		if (page.courseselect.value == NO_COURSE) return;
 		
 		_copyLinkCodeToClipboard();
+	}
+	
+	function _handleMessageButton(evt) {
+		if (page.courseselect.value == NO_COURSE) return;
+		
+		_copyMessageCodeToClipboard();
 	}
 	
 	//--------------------------------------------------------------
@@ -549,18 +566,30 @@ const app = function () {
     //------------------------------------------------------------------------------------------
     // create link code and copy to clipboard
     //------------------------------------------------------------------------------------------
-	function _copyLinkCodeToClipboard() {
-		_setNotice('');
-				
+	function _copyTextToClipboard(txt) {
 		var clipboardElement = page.textforclipboard;
-		clipboardElement.value = _createLinkCode();
+		clipboardElement.value = txt;
 		clipboardElement.style.display = 'block';
 		clipboardElement.select();
 		document.execCommand("Copy");
 		clipboardElement.selectionEnd = clipboardElement.selectionStart;
 		page.textforclipboard.style.display = 'none';
+	}	
+	
+	function _copyLinkCodeToClipboard() {
+		_setNotice('');
+				
+		_copyTextToClipboard(_createLinkCode());
+		
+		_setNotice('Link to welcome letter for ' + settings.fulllayout.fullname + ', ' + settings.layouttype + ', ' + settings.term + ' copied to clipboard');
+	}
+	
+	function _copyMessageCodeToClipboard() {
+		_setNotice('');
 
-		_setNotice('Link to welcome message for ' + settings.fulllayout.fullname + ', ' + settings.layouttype + ', ' + settings.term + ' copied to clipboard');
+		_copyTextToClipboard(_createMessageCode());
+
+		_setNotice('Welcome message HTML for ' + settings.fulllayout.fullname + ', ' + settings.layouttype + ', ' + settings.term + ' copied to clipboard');
 	}
 	
 	function _createLinkCode() {
@@ -572,6 +601,12 @@ const app = function () {
 		linkCode += '&term=' + settings.term;
 
 		return linkCode;
+	}
+	
+	function _createMessageCode() {
+		var messageCode = page.messagestage.innerHTML;
+		
+		return messageCode;
 	}
 	
 	return {
