@@ -117,14 +117,16 @@ const app = function () {
 		page.header.toolname = document.getElementById('toolname');
 		page.header.courses = document.getElementById('courses');
 		page.header.controls = document.getElementById('controls');
-
+		page.header.style.display = 'none'; 
+		page.header.style.visibility = 'hidden';
+		
 		page.notice = document.getElementById('notice');
 		page.notice.classList.add('wl-notice');
 		
 		page.standards = document.getElementById('contents');
-		
-		page.header.style.display = 'none'; 
-		page.header.style.visibility = 'hidden';
+
+		page.textforclipboard = document.getElementById('text_for_clipboard');
+		page.textforclipboard.style.display = 'none';
 		
 		if (!_initializeSettings()) {
 			_setNotice('Failed to generate welcome letter - invalid parameters');
@@ -186,10 +188,12 @@ const app = function () {
 		var elemCourseSelect = _createCourseSelect();
 		var elemLayout = _createLayoutChoice();
 		var elemTerm = _createTermChoice();
+		var elemEmbedControl = _createEmbedControl();
 			
 		page.header.courses.appendChild(elemCourseSelect);
 		page.header.controls.appendChild(elemLayout);
 		page.header.controls.appendChild(elemTerm);
+		page.header.controls.appendChild(elemEmbedControl);
 		
 		page.header.style.display = 'block';
 		page.header.style.visibility = 'visible';
@@ -282,6 +286,15 @@ const app = function () {
 		return elemWrapper;
 	}
 		
+	function _createEmbedControl() {
+		var elemWrapper = document.createElement('span');
+		elemWrapper.classList.add('container');
+		
+		elemWrapper.appendChild(_makeButton('btnEmbed', 'wl-control', 'embed', 'copy embed code to clipboard', _handleEmbedButton));
+		
+		return elemWrapper;
+	}
+	
 	function _makeButton(id, className, label, title, listener) {
 		var btn = document.createElement('button');
 		btn.id = id;
@@ -466,6 +479,12 @@ const app = function () {
 		_generateWelcomeLetter();
 	}
 	
+	function _handleEmbedButton(evt) {
+		if (page.courseselect.value == NO_COURSE) return;
+		
+		_copyEmbedCodeToClipboard();
+	}
+	
 	//--------------------------------------------------------------
 	// build URL for use with Google sheet web API
 	//--------------------------------------------------------------
@@ -526,6 +545,34 @@ const app = function () {
 				console.log(error);
 			})
 	}
+	
+    //------------------------------------------------------------------------------------------
+    // create embed code and copy to clipboard
+    //------------------------------------------------------------------------------------------
+	function _copyEmbedCodeToClipboard() {
+		_setNotice('');
+				
+		var clipboardElement = page.textforclipboard;
+		clipboardElement.value = _createEmbedCode();
+		clipboardElement.style.display = 'block';
+		clipboardElement.select();
+		document.execCommand("Copy");
+		clipboardElement.selectionEnd = clipboardElement.selectionStart;
+		page.textforclipboard.style.display = 'none';
+
+		_setNotice(settings.coursekey + ' embed code copied to clipboard');
+	}
+	
+	function _createEmbedCode() {
+		// note the javascript link is to courseinfosizer.js in Google Drive
+		var embedCode = 'embed code for welcome message:'
+			+ ' coursekey = ' + settings.coursekey
+			+ ' layouttype = ' + settings.layouttype
+			+ ' term = ' + settings.term;
+
+		return embedCode;
+	}
+
 	
 	return {
 		init: init
