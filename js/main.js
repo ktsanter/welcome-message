@@ -1,6 +1,5 @@
 //
 // TODO: change student/mentor to layoutType
-// TODO: replace template variables in message HTML before copying
 //
 const app = function () {
 	const PAGE_TITLE = 'Welcome letter'
@@ -231,8 +230,8 @@ const app = function () {
 		
 	function _createLayoutChoice() {
 		var layoutChoices = ['student', 'mentor'];
-		var elementName = 'student_mentor';
-		var handler = _studentMentorChange;
+		var elementName = 'layouttype';
+		var handler = _layoutTypeChange;
 		var className = 'wl-radio';
 		
 		var elemWrapper = document.createElement('span');
@@ -474,7 +473,7 @@ const app = function () {
 		_generateWelcomeLetter();
 	}
 	
-	function _studentMentorChange(evt) {
+	function _layoutTypeChange(evt) {
 		settings.layouttype = evt.target.id
 
 		if (page.courseselect.value == NO_COURSE) return;
