@@ -92,12 +92,12 @@ const app = function () {
 				"There are weekly due dates for assignments, with penalties for late assignments."
 			],
 			"trail": [
+				"Details for policies can be found in the <span class=\"wl-bblink\">Course Info</span> section.  Please contact me anytime you have questions."
+			],
+			"trail_ap": [
 				"Details for policies can be found in the <span class=\"wl-bblink\">Course Info</span> section "
         + "and in the <a href='https://michiganvirtual.org/about/support/knowledge-base/advanced-placement-course-policy/' target='_blank'>Advanced Placement Course Policy</a> document. "
         + "Please contact me anytime you have questions."
-			],
-			"trail_ap": [
-				"Details for policies can be found in the <span class=\"wl-bblink\">Course Info</span> section.  Please contact me anytime you have questions."
 			]
 		}
 	};
