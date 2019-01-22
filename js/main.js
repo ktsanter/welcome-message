@@ -1,5 +1,6 @@
 //
 // TODO: change student/mentor to layoutType
+// TODO: add flexibility (query parameter?) for school year
 //
 const app = function () {
 	const PAGE_TITLE = 'Welcome letter'
@@ -32,6 +33,7 @@ const app = function () {
 		"mentor": {
 			"main": "contents",
 			"contact": "msg_mentor_contact",
+      "passwords": "msg_mentor_passwords",
 			"generalinfo": "msg_mentor_generalinfo",
 			"welcome": "msg_mentor_welcome",
 			"resources": "msg_mentor_resources",
@@ -56,6 +58,7 @@ const app = function () {
 		"mentor": {
 			"main": "msg_mentor_main.html",
 			"contact": "msg_mentor_contact.html",
+      "passwords": "msg_mentor_passwords.html",
 			"generalinfo": "msg_mentor_generalinfo.html",
 			"welcome": "msg_mentor_welcome.html",
 			"resources": "msg_mentor_resources.html",
@@ -358,8 +361,6 @@ const app = function () {
 		
 		_includeHTML(layoutelementMain, settings.include + filename, _renderWelcomeLetterSubsections);
 		_includeHTML(page.messagestage.id, settings.include + messageinclude, _replaceAllTemplateVariables);
-    
-    _addPasswordLink();
 	}
 	
 	function _renderWelcomeLetterSubsections() {
@@ -422,6 +423,7 @@ const app = function () {
 	
 	function _includeHTML(elemId, url, callback) {
 		//console.log('_includeHTML: elemId=' + elemId + ' url=' + url); //+ ' cb=' + callback);
+    //console.log('  elem: ' + document.getElementById(elemId).id);
 		$("#" + elemId).load(url, function(response, status, xhr) {
 			if (status == "success") {
 				callback(elemId);
@@ -439,6 +441,8 @@ const app = function () {
 			var ihtml = templateElements.item(i).innerHTML;
 			templateElements.item(i).innerHTML = _replaceTemplateVariables(ihtml);
 		}
+        
+    _addPasswordLink();
 	}
 
 	function _replaceTemplateVariables(str) {
@@ -457,22 +461,10 @@ const app = function () {
 		if (str == '[[linktolettersite]]') return _createLinkCode();		
 		var msg = 'unmatched template variable: ' + str;
 		_setNotice(msg);
-		console.log(msg);
+		//console.log(msg);
 		
 		return str;
 	}
-  
-  function _addPasswordLink() {
-    /*
-    var element =  document.getElementById('passwords');
-    if (typeof(element) != 'undefined' && element != null)
-    {
-       element.addEventListener('click', function() {
-         console.log('beep');
-       }, false);
-    }
-    */
-  }
 
 	//---------------------------------------
 	// utility functions
@@ -527,6 +519,49 @@ const app = function () {
 		
 		_copyMessageCodeToClipboard();
 	}
+  
+  function _addPasswordLink() {
+    var element =  document.getElementById('passwords');
+    if (typeof(element) != 'undefined' && element != null)
+    {
+      element.removeEventListener('click', _openPasswordPage);
+      element.addEventListener('click', _openPasswordPage, false);
+      
+      /*
+      console.log(typeof element.onclick);
+      if(typeof element.onclick == null) {
+        console.log('adding event listener');
+        element.addEventListener('click', function() {
+           _openPasswordPage();
+        }, false);
+      }
+      */
+    }
+  }
+  
+  function _openPasswordPage() {
+    var termMapper = {
+			"s1": "semester1",
+			"s2": "semester2",
+			"t1": "trimester1",
+			"t2": "trimester2",
+			"t3": "trimester3",
+			"summer": "summer",
+			"essentials": "essentials",
+			"open": "open"
+    }
+
+    var url = 'https://ktsanter.github.io/course-passwords/course-passwords.html';
+    var instructor = 'ksanter';
+    var schoolyear = '2018-2019';
+    var term = termMapper[settings.term];
+    var coursekey = settings.coursekey;
+    var queryParams = '?instructor=' + instructor + '&schoolyear=' + schoolyear + '&term=' + term + '&coursekey=' + coursekey;
+    console.log('open password page');
+    console.log(url + queryParams);
+    var win = window.open(url + queryParams, '_blank');
+    win.focus();
+  }
 	
 	//--------------------------------------------------------------
 	// build URL for use with Google sheet web API
@@ -578,7 +613,7 @@ const app = function () {
 				if (json.status !== 'success') {
 					_setNotice(json.message);
 				}
-				console.log('json.data: ' + JSON.stringify(json.data));
+				//console.log('json.data: ' + JSON.stringify(json.data));
 				settings.fulllayout = json.data;
 				_setNotice('');
 				callback();
