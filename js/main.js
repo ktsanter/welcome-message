@@ -219,7 +219,8 @@ const app = function () {
 		elemNoCourseOption.text = '<select a course>';
 		elemCourseSelect.appendChild(elemNoCourseOption);
 		
-		var courseList = settings.courseList;
+		var courseList = _sortCourseList(settings.courseList);
+
 		for (var i = 0; i <  courseList.length; i++) {
 			var elemOption = document.createElement('option');
 			elemOption.value = courseList[i].coursekey;
@@ -231,6 +232,14 @@ const app = function () {
 		
 		return elemCourseSelect;
 	}
+  
+  function _sortCourseList(origList) {
+    return origList.sort( function(a, b) {
+      var aname = a.fullname.toLowerCase();
+      var bname = b.fullname.toLowerCase();
+      return aname.localeCompare(bname);
+    });
+  }
 		
 	function _createLayoutChoice() {
 		var layoutChoices = ['student', 'mentor'];
@@ -349,6 +358,8 @@ const app = function () {
 		
 		_includeHTML(layoutelementMain, settings.include + filename, _renderWelcomeLetterSubsections);
 		_includeHTML(page.messagestage.id, settings.include + messageinclude, _replaceAllTemplateVariables);
+    
+    _addPasswordLink();
 	}
 	
 	function _renderWelcomeLetterSubsections() {
@@ -450,6 +461,18 @@ const app = function () {
 		
 		return str;
 	}
+  
+  function _addPasswordLink() {
+    /*
+    var element =  document.getElementById('passwords');
+    if (typeof(element) != 'undefined' && element != null)
+    {
+       element.addEventListener('click', function() {
+         console.log('beep');
+       }, false);
+    }
+    */
+  }
 
 	//---------------------------------------
 	// utility functions
@@ -555,7 +578,7 @@ const app = function () {
 				if (json.status !== 'success') {
 					_setNotice(json.message);
 				}
-				//console.log('json.data: ' + JSON.stringify(json.data));
+				console.log('json.data: ' + JSON.stringify(json.data));
 				settings.fulllayout = json.data;
 				_setNotice('');
 				callback();
