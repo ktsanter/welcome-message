@@ -459,6 +459,7 @@ const app = function () {
 		if (str == '[[coursefullname]]') return settings.fulllayout.fullname;
 		if (str == '[[calendarsection]]') return templateVariableReplacements.term[settings.term];
 		if (str == '[[linktolettersite]]') return _createLinkCode();		
+    if (str == '[[coursekey]]') return settings.coursekey;
 		var msg = 'unmatched template variable: ' + str;
 		_setNotice(msg);
 		//console.log(msg);
