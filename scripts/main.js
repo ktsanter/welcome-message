@@ -3,6 +3,7 @@
 // welcome message 
 //-----------------------------------------------------------------------------------
 // TODO: obfuscate coursekey ?
+// TODO: get mentor link to password tool
 //-----------------------------------------------------------------------------------
 
 const app = function () {
@@ -70,12 +71,10 @@ const app = function () {
   function _renderPage() {
     var audience = settings.audience;
     var config = settings.layoutdata.config[audience];
-    
-    console.log(settings.layoutdata);
   
     page.body.appendChild(CreateElement._createDiv(null, 'container-fluid', config.container));
     _renderSection('innercontainer', config.innercontainer);
-    _renderPasswordSection('passwords');
+    if (settings.audience == 'mentor') _renderPasswordSection('passwords');
     
     for (var key in config) {
       if (key != 'container' && key != 'innercontainer') _renderSection(key, config[key]);
@@ -95,9 +94,9 @@ const app = function () {
     
     var section = document.getElementById(sectionId);
     var standard = settings.layoutdata.standards.Assessment.Assess_passwords;
-    console.log(standard);
+
     if (standard != '' && standard != 'There are no exam passwords')   {
-      var href = ''; // figure this out
+      var href = ''; // figure this out - get from sheet?
       section.appendChild(CreateElement._createLink(null, null,  'TODO: link to new pwd tool', href));
     }
   }
