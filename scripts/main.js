@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------------------
 
 const app = function () {
-  const appversion = '0.01';
+  const appversion = '0.02';
 	const page = {};
   const settings = {};
   
@@ -69,6 +69,7 @@ const app = function () {
   }
   
   function _renderPage() {
+    console.log(settings.layoutdata.passwordlink);
     var audience = settings.audience;
     var config = settings.layoutdata.config[audience];
   
@@ -81,6 +82,7 @@ const app = function () {
     }
     
     _changeLinkTargets();
+    _eliminateEmptyListItems();
   } 
     
   function _renderSection(sectionId, sectionMarkdown) {
@@ -96,7 +98,7 @@ const app = function () {
     var standard = settings.layoutdata.standards.Assessment.Assess_passwords;
 
     if (standard != '' && standard != 'There are no exam passwords')   {
-      var href = ''; // figure this out - get from sheet?
+      var href = settings.layoutdata.passwordlink; // figure this out - get from sheet?
       section.appendChild(CreateElement._createLink(null, null,  'TODO: link to new pwd tool', href));
     }
   }
@@ -110,6 +112,7 @@ const app = function () {
         var major = key.match(/([^\.]*)\./)[1];
         var minor = key.match(/\.([^\.]*)/)[1];
         var standardVal = settings.layoutdata.standards[major][minor];
+        if (standardVal.toLowerCase() == 'n/a') standardVal = '';
         str = str.replace(templateVar, standardVal);
       }
     }
@@ -130,6 +133,20 @@ const app = function () {
       if (links[i].href.indexOf('mailto:') != 0) {
         links[i].target = '_blank';
       }
+    }
+  }
+  
+  function _eliminateEmptyListItems() {
+    var toElim = [];
+    var listItems = document.getElementsByTagName('li');
+    for (var i = 0; i < listItems.length; i++) {
+      if (listItems[i].innerHTML == '') {
+        toElim.push(listItems[i]);
+      }
+    }
+    
+    for (var i = 0; i < toElim.length; i++) {
+      toElim[i].parentNode.removeChild(toElim[i]);
     }
   }
   
