@@ -1,0 +1,93 @@
+/*-------------------------------------------------------------------*/
+ /* styling for welcome message                                      */
+ /*------------------------------------------------------------------*/
+
+body {
+	color: black;
+	background-color: #eee;
+	font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+	font-size: 13px;
+	margin-left: 12px;
+	margin-right: 12px;
+}
+
+.notice {
+  font-style: italic;
+  color: blue;
+  margin-bottom: 6px;
+  min-width: 20em;
+}
+
+.test {
+  border: 1px solid blue;
+  margin-bottom: 1em;
+}
+
+.section-contact {
+  background-color: white;
+  border: 1px solid #2f8d98;
+	border-radius: 6px;
+}
+
+#imgLogo {
+	margin-left: 2px;
+	margin-top: 2px;
+	margin-bottom: 4px;  
+}
+
+#imgInstructor {
+	width: 65px;
+	height: auto;
+	padding-bottom: 4px;
+}
+
+.section-keypoints {
+	background-color: white;
+  border: 1px solid #2f8d98;
+	border-radius: 6px;
+	padding-left: 5px;
+	padding-right: 5px;
+}
+
+.section-keypoints ul {
+  margin-top: -1.4em;
+}
+
+.section-generic {}
+
+.section-label {
+	color: white;
+	background-color: #2f8d98;
+	font-weight: bold;
+	border-style: solid;
+	border-width: 1px;
+	border-radius: 6px;
+	padding-left: 8px;  
+}
+
+.section-label.section-label-big {
+  font-size: 1.2em;
+  margin-bottom: 0.4em;
+}
+
+.section-passwords {
+  color: white;
+  background-color: #2f8d98;
+  border: 1px solid #2f8d98;
+  border-radius: 6px;
+  text-align: center;
+  font-size: 16px;
+  font-weight: bold;
+  margin-top: 2px;
+  margin-bottom: 2px;
+}
+
+.section-passwords:hover {
+  color: #2f8d98;
+  background-color: #dddddd;
+  text-decoration: underline;
+}
+
+.section-passwords-hidden {
+  display: none;
+}

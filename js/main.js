@@ -573,7 +573,7 @@ const app = function () {
 		url += datasetname && datasetname !== null ? '&dataset=' + datasetname : '';
 		url += coursekey && coursekey !== null ? '&coursekey=' + coursekey : '';
 		url += layouttype && layouttype !== null ? '&layouttype=' + layouttype : '';
-		//console.log('buildApiUrl: url=' + url);
+		console.log('buildApiUrl: url=' + url);
 		
 		return url;
 	}
