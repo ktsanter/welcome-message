@@ -4,7 +4,7 @@
 //
 const app = function () {
 	const PAGE_TITLE = 'Welcome letter'
-	const PAGE_VERSION = 'v0.1';
+	const PAGE_VERSION = 'v0.2';
 		
 	const API_BASE = 'https://script.google.com/macros/s/AKfycbwuO-prQVmE_8HetNfg67dqK4Jie7eetp_8j4Bo5HcHGASf_5GN/exec';
 	const API_KEY = 'MVwelcomemessageAPI';
