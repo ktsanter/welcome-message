@@ -2,11 +2,12 @@
 //-----------------------------------------------------------------------------------
 // navigation front-end for welcome messages
 //-----------------------------------------------------------------------------------
+// TODO: finish message generation
 // TODO: obfuscate coursekey and audience?
 //-----------------------------------------------------------------------------------
 
 const app = function () {
-  const appversion = '0.01';
+  const appversion = '0.02';
   const appname = 'Course welcome messages';
 	const page = {};
   const settings = {};
@@ -50,9 +51,12 @@ const app = function () {
     container.appendChild(CreateElement._createDiv(null, 'controlbar-title', appname));
     _renderNotice(container);
     
-    var courseList = await _getCourseList();
-    if (courseList) {      
-      var elemSelect = CreateElement._createSelect(null, 'controlbar-select', e => _handleChangeSelect(e));
+    var resultdata = await _getNavInfo();
+    if (resultdata && resultdata.courselist) {
+      var courseList = resultdata.courselist;
+      settings.message = {student: resultdata.studentmessage, mentor: resultdata.mentormessage};
+      
+      var elemSelect = CreateElement._createSelect('courseSelect', 'controlbar-select', e => _handleChangeSelect(e));
       container.appendChild(elemSelect);
       elemSelect.appendChild(CreateElement._createOption(null, null, NO_COURSE, 'select a course...'));
       for (var i = 0; i < courseList.length; i++) {
@@ -63,7 +67,6 @@ const app = function () {
       container.appendChild(CreateElement._createRadio(null, 'controlbar-audience', 'audience', 'mentor', 'mentor', false, _handleAudienceClick));
       settings.audience = 'student';
       
-      //id, classList, title, handler, dblclickhandler
       container.appendChild(CreateElement._createIcon('iconLink', 'fa-lg fas fa-link', 'create link to welcome message page', _handleLinkClick));
       container.appendChild(CreateElement._createIcon('iconMessage', 'fa-lg fas fa-comment-alt', 'create formatted message suitable for email', _handleMessageClick));
       
@@ -82,21 +85,22 @@ const app = function () {
     container.appendChild(page.spinner);
   }
   
-  async function _getCourseList() {
-    var courseList = null;
+  async function _getNavInfo() {
+    var resultdata = null;
 
     _setNotice('loading course list', true);    
     var requestParams = {};
-    var requestResult = await googleSheetWebAPI.webAppGet(apiInfo, 'courselist', requestParams, _reportError);
+    var requestResult = await googleSheetWebAPI.webAppGet(apiInfo, 'navinfo', requestParams, _reportError);
 
     if (requestResult.success) {
       _setNotice('');
-      courseList = requestResult.data.sort(function(a, b) {
+      resultdata = requestResult.data;
+      resultdata.courselist = resultdata.courselist.sort(function(a, b) {
         return a.coursename.localeCompare(b.coursename);
       });
     }
 
-    return courseList;
+    return resultdata;
   }
   
   async function _loadAndRenderWelcomeMessage() {
@@ -138,23 +142,29 @@ const app = function () {
     return origin + justpath + '/' + filename + queryParams;
   }
   
-  function _copyMentorLinkText() {
+  function _copyLinkText() {
     var coursekey = settings.coursekey;
     var audience = settings.audience;
     if (!coursekey || !audience || coursekey == NO_COURSE) return;
 
-    
     _copyToClipboard(_makeURLForWelcomePage(coursekey, audience));
     _setNotice('copied link');
   }
   
-  function _copyMentorMessageText() {
+  function _copyMessageText() {
     var coursekey = settings.coursekey;
     var audience = settings.audience;
     if (!coursekey || !audience || coursekey == NO_COURSE) return;
     
+    var elemSelect = document.getElementById('courseSelect');
+    var coursename = elemSelect[elemSelect.selectedIndex].text;
     var url = _makeURLForWelcomePage(coursekey, audience);
-    var msg = '<em>test</em> this is <a href="' + url + '" target="blank">' + 'the link' + '</a>' + ' and more stuff!';
+    var linktext = '[welcome letter](' + url + ')';
+    
+    var msg = settings.message[audience];
+    msg = _replaceTemplateVariables(msg, {COURSE: '***' + coursename + '***', LINK: linktext});
+    msg = _convertMarkdownToHTML(msg);
+    
     _copyRenderedToClipboard(msg);
     _setNotice('copied message');
   }
@@ -175,11 +185,11 @@ const app = function () {
   }
   
   function _handleLinkClick() {
-    _copyMentorLinkText();
+    _copyLinkText();
   }
   
   function _handleMessageClick() {
-    _copyMentorMessageText();
+    _copyMessageText();
   }
   
   //---------------------------------------
@@ -199,7 +209,6 @@ const app = function () {
       elemButton = CreateElement._createButton('btnCopyRendered', null, 'hide me');
       elemTarget = CreateElement._createDiv('divCopyRenderedTarget', null);
       elemButton.setAttribute('data-clipboard-target', '#' + elemTarget.id);
-      console.log(Clipboard);
       var junk = new Clipboard(elemButton); 
       
       container.appendChild(elemButton);
@@ -217,6 +226,37 @@ const app = function () {
     elemTarget.innerHTML = txt;
     elemButton.click();
     container.style.display = 'none';
+  }
+  
+  
+	//------------------------------------------------------------------
+	// process MarkDown
+	//------------------------------------------------------------------  
+  function _convertMarkdownToHTML(text) {
+    var reader = new commonmark.Parser();
+    var writer = new commonmark.HtmlRenderer();
+    var parsed = reader.parse(text);
+    var result = writer.render(parsed);
+
+    return result;
+  }
+  
+  function _replaceTemplateVariables(str, replacements) {
+    var templateVars = str.match(/\[\[[^\[^\]]*\]\]/g);  // should match [[xxxxx]]
+    if (templateVars) {
+      for (var i = 0; i < templateVars.length; i++) {
+        var templateVar = templateVars[i];
+        var key = templateVar.slice(2, -2);
+        
+        var replaceVal = '[???]';
+        if (key == 'FIRST_NAME') replaceVal = '[FIRST_NAME]';
+        else replaceVal = replacements[key];
+
+        str = str.replace(templateVar, replaceVal);
+      }
+    }
+    
+    return str; 
   }
   
 	//---------------------------------------
