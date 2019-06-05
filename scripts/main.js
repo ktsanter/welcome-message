@@ -2,12 +2,12 @@
 //-----------------------------------------------------------------------------------
 // welcome message 
 //-----------------------------------------------------------------------------------
-// TODO: obfuscate coursekey ?
-// TODO: get mentor link to password tool
+// TODO: obfuscate coursekey and audience?
+// TODO: create nav page for me
 //-----------------------------------------------------------------------------------
 
 const app = function () {
-  const appversion = '0.02';
+  const appversion = '0.03';
 	const page = {};
   const settings = {};
   
@@ -33,8 +33,8 @@ const app = function () {
 
       if (requestResult.success) {
         _setNotice('');
-        settings.layoutdata = requestResult.data;
-        _renderPage();
+        var layoutdata = requestResult.data
+        _renderPage(settings.audience, layoutdata.config[settings.audience], layoutdata.standards, layoutdata.passwordlink);
       }
 		}
   }
@@ -68,59 +68,44 @@ const app = function () {
     page.body.appendChild(page.notice);
   }
   
-  function _renderPage() {
-    console.log(settings.layoutdata.passwordlink);
-    var audience = settings.audience;
-    var config = settings.layoutdata.config[audience];
-  
+  function _renderPage(audience, config, standards, passwordlink) {
     page.body.appendChild(CreateElement._createDiv(null, 'container-fluid', config.container));
-    _renderSection('innercontainer', config.innercontainer);
-    if (settings.audience == 'mentor') _renderPasswordSection('passwords');
+    _renderSection('innercontainer', config.innercontainer, standards);
+    if (audience == 'mentor') _renderPasswordSection('passwords', standards.Assessment.Assess_passwords, passwordlink);
     
     for (var key in config) {
-      if (key != 'container' && key != 'innercontainer') _renderSection(key, config[key]);
+      if (key != 'container' && key != 'innercontainer') _renderSection(key, config[key], standards);
     }
     
     _changeLinkTargets();
     _eliminateEmptyListItems();
   } 
     
-  function _renderSection(sectionId, sectionMarkdown) {
+  function _renderSection(sectionId, sectionMarkdown, standards) {
     var elem = document.getElementById(sectionId);
-    var markdown = _replaceTemplateVariables(sectionMarkdown);
+    var markdown = _replaceTemplateVariables(sectionMarkdown, standards);
     elem.innerHTML = _convertMarkdownToHTML(markdown);
   }
   
-  function _renderPasswordSection(sectionId) {
-    if (settings.audience != 'mentor') return;
-    
+  function _renderPasswordSection(sectionId, passwordStandard, passwordLink) {
     var section = document.getElementById(sectionId);
-    var standard = settings.layoutdata.standards.Assessment.Assess_passwords;
 
-    if (standard != '' && standard != 'There are no exam passwords')   {
-      var href = settings.layoutdata.passwordlink; // figure this out - get from sheet?
-      section.appendChild(CreateElement._createLink(null, null,  'course passwords', href));
+    if (passwordStandard != '' && passwordStandard != 'There are no exam passwords')   {
+      section.appendChild(CreateElement._createLink(null, null,  'course passwords', passwordLink));
     }
   }
   
-  function _replaceTemplateVariables(str) {
-    var standardsVars = str.match(/\[\[([^\[^\]^.]*)\.([^\[^\]]*)\]\]/g);  // [[xxxx.yyyy]]
+  function _replaceTemplateVariables(str, standards) {
+    var standardsVars = str.match(/\[\[([^\[^\]^.]*)\.([^\[^\]]*)\]\]/g);  // [[major.minor]]
     if (standardsVars) {
       for (var i = 0; i < standardsVars.length; i++) {
         var templateVar = standardsVars[i];
         var key = templateVar.slice(2,-2);
         var major = key.match(/([^\.]*)\./)[1];
         var minor = key.match(/\.([^\.]*)/)[1];
-        var standardVal = settings.layoutdata.standards[major][minor];
+        var standardVal = standards[major][minor];
         if (standardVal.toLowerCase() == 'n/a') standardVal = '';
         str = str.replace(templateVar, standardVal);
-      }
-    }
-    
-    var termlongVars = str.match(/\[\[termlong\]\]/g);
-    if (termlongVars) {
-      for (var i = 0; i < termlongVars.length; i++) {
-        str = str.replace(termlongVars[i], '??????');
       }
     }
     
@@ -154,14 +139,9 @@ const app = function () {
 	// process MarkDown
 	//------------------------------------------------------------------  
  function _convertMarkdownToHTML(text) {
-    var highlightspan = "<span style=\"background-color: #FFFF00\">";
-    var highlightendspan = '</span>';
-
     var reader = new commonmark.Parser();
     var writer = new commonmark.HtmlRenderer();
-
-    var parsed = reader.parse(text);  // tree now available for walking
-
+    var parsed = reader.parse(text);
     var result = writer.render(parsed);
 
     return result;
