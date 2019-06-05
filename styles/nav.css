@@ -1,0 +1,68 @@
+/*-------------------------------------------------------------------*/
+ /* styling for welcome message navigation                           */
+ /* note this is intended to supplement the main CSS                 */
+ /*------------------------------------------------------------------*/
+#errorMessageWelcomeNav {
+  font-style: italic;
+  color: blue;
+  display: none;
+}
+
+.controlbar {
+  color: white;
+  background-color: black;
+  border: 1px solid white;
+  padding-top: 0.4em;
+  min-height: 2.7em;
+  margin-bottom: 0.4em;
+  margin-left: -12px;
+  margin-right: -12px;
+  padding-left: 0.4em;
+  padding-right: 0.4em;
+}
+
+.controlbar-title {
+  display: inline-block;
+  font-size: 1.1em;
+  margin-left: 0.2em;
+}
+
+.controlbar-select {
+  margin-left: 0.4em;
+}
+
+.controlbar-audience {
+  margin-left: 0.4em;
+}
+
+#iconLink {
+  margin-left: 0.8em;
+}
+
+#iconMessage {
+  margin-left: 0.4em;
+}
+
+.controlbar-notice {
+  display: inline-block;
+  float: right;
+  max-height: 0.2em;
+}
+
+#notice {
+  color: #00ff00;
+  min-width: 0em;
+  margin-left: 0.4em;
+}
+
+#spinner {
+  color: #00ff00;
+  font-size: 0.8em;
+  margin-left: 0.2em;
+}
+
+.renderedcopy {
+  color: black;
+  background-color: white;
+  display: none;
+}

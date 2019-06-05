@@ -56,7 +56,7 @@ class CreateElement {
     CreateElement._addClassList(elem, classList);
     elem.innerHTML = label;
     elem.title = title;
-    elem.addEventListener('click', e => handler(e), false);
+    if (handler) elem.addEventListener('click', e => handler(e), false);
     
     return elem;
   }
@@ -107,10 +107,11 @@ class CreateElement {
     return elem;
   }
 
-  static _createSelect(id, classList) {
+  static _createSelect(id, classList, changehandler) {
     var elem = document.createElement('select');
     if (id && id != '') elem.id = id;
     CreateElement._addClassList(elem, classList);
+    if (changehandler) elem.addEventListener('change', changehandler, false);
     
     return elem;
   }
@@ -132,6 +133,28 @@ class CreateElement {
     CreateElement._addClassList(elem, classList);
     elem.id = id;
     elem.type = 'checkbox';
+    elem.name = groupName;
+    elem.value = buttonValue;
+    elem.checked = checked;
+    elem.addEventListener('click', e => handler(e), false);
+    container.appendChild(elem);
+    
+    var label = document.createElement('label');
+    label.htmlFor = id;
+    label.innerHTML = displayValue;
+    CreateElement._addClassList(label, classList);
+    container.appendChild(label);
+
+    return container;
+  }
+  
+  static _createRadio(id, classList, groupName, buttonValue, displayValue, checked, handler) {
+    var container = CreateElement._createSpan(null, null);
+    
+    var elem = document.createElement('input');
+    CreateElement._addClassList(elem, classList);
+    elem.id = id;
+    elem.type = 'radio';
     elem.name = groupName;
     elem.value = buttonValue;
     elem.checked = checked;

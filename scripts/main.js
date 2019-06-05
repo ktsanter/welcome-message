@@ -3,11 +3,10 @@
 // welcome message landing page
 //-----------------------------------------------------------------------------------
 // TODO: obfuscate coursekey and audience?
-// TODO: create nav page for me
 //-----------------------------------------------------------------------------------
 
 const app = function () {
-  const appversion = '0.03';
+  const appversion = '0.04';
 	const page = {};
   const settings = {};
   
@@ -71,7 +70,7 @@ const app = function () {
   function _renderWelcomeMessage(audience, config, standards, passwordLink) {
     var message = new WelcomeMessage;
     message.setParams(audience, config, standards, passwordLink);
-    message.renderPage(page.body);
+    message.renderMessage(page.body);
   }
   
 	//------------------------------------------------------------------

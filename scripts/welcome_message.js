@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------------
 class WelcomeMessage {
   constructor() {
-    this._version = '0.01';
+    this._version = '0.03';
     this._container = null;
   }
   
@@ -21,7 +21,7 @@ class WelcomeMessage {
 	//-----------------------------------------------------------------------------
 	// page rendering
 	//-----------------------------------------------------------------------------  
-  renderPage(appendTo) {
+  renderMessage(appendTo) {
     this._removeContainer();
     this._container = CreateElement._createDiv('containerWelcomeMessage', 'container-fluid', this._config.container);
     appendTo.appendChild(this._container);
@@ -37,8 +37,12 @@ class WelcomeMessage {
     this._eliminateEmptyListItems();
   }
   
+  removeMessage() {
+    this._removeContainer();
+  }
+  
   _removeContainer() {
-    if (this.container) {
+    if (this._container) {
       this._container.parentNode.removeChild(this._container);
       this._container = null;
     }
@@ -55,6 +59,8 @@ class WelcomeMessage {
 
     if (passwordStandard != '' && passwordStandard != 'There are no exam passwords')   {
       section.appendChild(CreateElement._createLink(null, null,  'course passwords', passwordLink));
+    } else {
+      section.style.display = 'none';
     }
   }
   
