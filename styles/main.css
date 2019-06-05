@@ -100,8 +100,16 @@ body {
   margin-top: 2px;
   margin-bottom: 2px;
 }
+.section-passwords a {
+  color: white;
+}
 
 .section-passwords:hover {
+  color: #093c44;
+  background-color: white;
+  text-decoration: underline;
+}
+.section-passwords:hover a {
   color: #093c44;
   background-color: white;
   text-decoration: underline;

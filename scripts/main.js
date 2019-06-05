@@ -99,7 +99,7 @@ const app = function () {
 
     if (standard != '' && standard != 'There are no exam passwords')   {
       var href = settings.layoutdata.passwordlink; // figure this out - get from sheet?
-      section.appendChild(CreateElement._createLink(null, null,  'TODO: link to new pwd tool', href));
+      section.appendChild(CreateElement._createLink(null, null,  'course passwords', href));
     }
   }
   
