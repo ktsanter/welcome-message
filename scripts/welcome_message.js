@@ -54,6 +54,11 @@ class WelcomeMessage {
     elem.innerHTML = WelcomeMessage._convertMarkdownToHTML(markdown);
   }
   
+  hasPasswords() {
+    var passwordStandard = this._standards.Assessment.Assess_passwords;
+    return (passwordStandard != '' && passwordStandard != 'There are no exam passwords');
+  }
+  
   static _renderPasswordSection(sectionId, passwordStandard, passwordLink) {
     var section = document.getElementById(sectionId);
 

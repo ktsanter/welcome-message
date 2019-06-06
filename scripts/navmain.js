@@ -159,10 +159,25 @@ const app = function () {
     var elemSelect = document.getElementById('courseSelect');
     var coursename = elemSelect[elemSelect.selectedIndex].text;
     var url = _makeURLForWelcomePage(coursekey, audience);
-    var linktext = '[welcome letter](' + url + ')';
+    
+    var linkspan = '<span style="color: white; background-color: #115e6e; border: 1px solid white; border-radius: 6px; padding: 4px 4px;">';
+    linkspan += '<a href="' + url + '" target="_blank" style="color:white; background-color: #115e6e; text-decoration: underline;">welcome letter</a>';
+    linkspan += '</span>';
+    
+    var passwordlinkspan = '-   This course has no passwords.\n';
+    if (page.message.hasPasswords()) {
+      var passwordlinkspan = '<span style="color: white; background-color: #115e6e; border: 1px solid white; border-radius: 6px; padding: 4px 4px;">';
+      passwordlinkspan += '<a href="' + page.message._passwordlink + '" target="_blank" style="color:white; background-color: #115e6e; text-decoration: underline;">course passwords</a>';
+      passwordlinkspan += '</span>';
+      passwordlinkspan = '- The exams in this course are password-protected and you can find them here: ' + passwordlinkspan + '.  Please keep them secure - when exam time comes please enter them for your students.\n';
+    }
     
     var msg = settings.message[audience];
-    msg = _replaceTemplateVariables(msg, {COURSE: '***' + coursename + '***', LINK: linktext});
+    msg = _replaceTemplateVariables(msg, {
+      COURSE: '***' + coursename + '***', 
+      LINK: linkspan, 
+      PASSWORDS: passwordlinkspan
+    });
     msg = _convertMarkdownToHTML(msg);
     
     _copyRenderedToClipboard(msg);
