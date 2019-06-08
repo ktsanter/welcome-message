@@ -3,6 +3,7 @@
 // navigation front-end for welcome messages
 //-----------------------------------------------------------------------------------
 // TODO: obfuscate coursekey and audience?
+// TODO: use standard_notice?
 //-----------------------------------------------------------------------------------
 
 const app = function () {
@@ -55,8 +56,9 @@ const app = function () {
   async function _renderControlbar() {
     var container = CreateElement.createDiv(null, 'controlbar');
     page.body.appendChild(container);
+    page.notice = new StandardNotice(page.body, container);
+    
     container.appendChild(CreateElement.createDiv(null, 'controlbar-title', appname));
-    _renderNotice(container);
     
     var resultdata = await _getNavInfo();
     if (resultdata && resultdata.courselist) {
@@ -79,29 +81,21 @@ const app = function () {
     }
   }
 
-  function _renderNotice(attachTo) {
-    var container = CreateElement.createDiv(null, 'controlbar-notice');
-    attachTo.appendChild(container);
-    
-    page.notice = CreateElement.createDiv('notice', 'notice');
-    container.appendChild(page.notice);
-    page.spinner = CreateElement.createIcon('spinner', 'fa fa-spinner fa-pulse fa-3x fa-fw"');
-    container.appendChild(page.spinner);
-  }
-  
   async function _getNavInfo() {
     var resultdata = null;
 
-    _setNotice('loading course list', true);    
+    page.notice.setNotice('loading course list', true);    
     var requestParams = {};
-    var requestResult = await googleSheetWebAPI.webAppGet(apiInfo, 'navinfo', requestParams, _reportError);
+    var requestResult = await googleSheetWebAPI.webAppGet(apiInfo, 'navinfo', requestParams, page.notice);
 
     if (requestResult.success) {
-      _setNotice('');
+      page.notice.setNotice('');
       resultdata = requestResult.data;
       resultdata.courselist = resultdata.courselist.sort(function(a, b) {
         return a.coursename.localeCompare(b.coursename);
       });
+    } else {
+      page.notice.setNotice('load failed');
     }
 
     return resultdata;
@@ -114,15 +108,17 @@ const app = function () {
 
     if (!coursekey || !audience || coursekey == NO_COURSE) return;
 
-    _setNotice('loading course info', true);
+    page.notice.setNotice('loading course info', true);
         
     var requestParams = {coursekey: coursekey};
-    var requestResult = await googleSheetWebAPI.webAppGet(apiInfo, 'courseinfo', requestParams, _reportError);
+    var requestResult = await googleSheetWebAPI.webAppGet(apiInfo, 'courseinfo', requestParams, page.notice);
 
     if (requestResult.success) {
-      _setNotice('');
+      page.notice.setNotice('');
       var data = requestResult.data;
       _renderWelcomeMessage(audience, data.config[audience], data.standards, data.passwordlink);
+    } else {
+      page.notice.setNotice('load failed');
     }
   }
   
@@ -193,13 +189,13 @@ const app = function () {
 	//------------------------------------------------------------------    
   function _handleChangeSelect(e) {
     settings.coursekey = e.target[e.target.selectedIndex].value
-    _setNotice('');
+    page.notice.setNotice('');
     _loadAndRenderWelcomeMessage();
   }
 
   function _handleAudienceClick(e) {
     settings.audience = e.target.value;
-    _setNotice('');
+    page.notice.setNotice('');
     _loadAndRenderWelcomeMessage();
   }
   
@@ -246,31 +242,6 @@ const app = function () {
     
     return str; 
   }
-  
-	//---------------------------------------
-	// utility functions
-	//----------------------------------------
-	function _setNotice (msg, showSpinner) {
-		page.notice.innerHTML = msg;
-
-		if (msg == '') {
-			page.notice.style.display = 'none'; 
-      page.spinner.style.display = 'none'
-      
-		} else {
-			page.notice.style.display = 'inline-block';
-      if (showSpinner) {
-        page.spinner.style.display = 'inline-block';
-      } else {
-        page.spinner.style.display = 'none'
-      }
-		}
-	}
-  
-	function _reportError (src, err) {
-		page.error.innerHTML = 'Error in ' + src + ': ' + err.name + ' "' + err.message + '"';
-		page.error.style.display = 'inline-block';
-	}
 
 	//---------------------------------------
 	// return from wrapper function

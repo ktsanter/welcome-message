@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------------
 
 const app = function () {
-  const appversion = '0.05';
+  const appversion = '0.06';
 	const page = {};
   const settings = {};
   
@@ -25,15 +25,17 @@ const app = function () {
 		
     var expectedQueryParams = [{key: 'coursekey', required: true}, {key: 'audience', required: true}];
 		if (_initializeSettings(expectedQueryParams)) {
-			_setNotice('loading...');
+			page.notice.setNotice('loading...', true);
 
       var requestParams = {coursekey: settings.coursekey};
-      var requestResult = await googleSheetWebAPI.webAppGet(apiInfo, 'courseinfo', requestParams, _reportError);
+      var requestResult = await googleSheetWebAPI.webAppGet(apiInfo, 'courseinfo', requestParams, page.notice);
 
       if (requestResult.success) {
-        _setNotice('');
+        page.notice.setNotice('');
         var layoutdata = requestResult.data;
         _renderWelcomeMessage(settings.audience, layoutdata.config[settings.audience], layoutdata.standards, layoutdata.passwordlink);
+      } else {
+        page.notice.setNotice('load failed');
       }
 		}
   }
@@ -60,7 +62,7 @@ const app = function () {
 			result = true;
 
     } else {   
-      _setNotice('failed to initialize: invalid parameters');
+      page.notice.setNotice('failed to initialize: invalid parameters');
     }
     
     return result;
@@ -70,8 +72,7 @@ const app = function () {
 	// page rendering
 	//-----------------------------------------------------------------------------  
   function _renderStandardElements() {
-    page.notice = CreateElement.createDiv('notice', 'notice');
-    page.body.appendChild(page.notice);
+    page.notice = new StandardNotice(page.body, page.body);
   }
 
   function _renderWelcomeMessage(audience, config, standards, passwordLink) {
@@ -84,24 +85,7 @@ const app = function () {
 	// handlers
 	//------------------------------------------------------------------    
   
-
-	//---------------------------------------
-	// utility functions
-	//----------------------------------------
-	function _setNotice (label) {
-		page.notice.innerHTML = label;
-
-		if (label == '') {
-			page.notice.style.display = 'none'; 
-		} else {
-			page.notice.style.display = 'block';
-		}
-	}
   
-  function _reportError(src, err) {
-    _setNotice('Error in ' + src + ': ' + err.name + ' "' + err.message + '"');
-  }
-
 	//---------------------------------------
 	// return from wrapper function
 	//----------------------------------------

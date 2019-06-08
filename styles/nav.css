@@ -2,11 +2,29 @@
  /* styling for welcome message navigation                           */
  /* note this is intended to supplement the main CSS                 */
  /*------------------------------------------------------------------*/
-#errorMessageWelcomeNav {
+
+/*-- standard error and notice tools --*/
+.standard_error {
+  display: none;
   font-style: italic;
   color: blue;
-  display: none;
+  margin-bottom: 0.4em;;
 }
+
+.standard-notice {
+  float: right;  
+  font-size: 0.9em;
+  font-style: italic;
+  margin-left: 0.4em;
+  margin-right: 0.2em;
+}
+
+#noticeSpinner {
+  font-size: 0.9em;
+  margin-left: 0.2em;
+  margin-right: 0.2em;
+}
+/*-- end of standard notice and error --*/
 
 .controlbar {
   color: white;
@@ -43,26 +61,10 @@
   margin-left: 0.4em;
 }
 
-.controlbar-notice {
-  display: inline-block;
-  float: right;
-  max-height: 0.2em;
-}
-
-#notice {
-  color: #00ff00;
-  min-width: 0em;
-  margin-left: 0.4em;
-}
-
-#spinner {
-  color: #00ff00;
-  font-size: 0.8em;
-  margin-left: 0.2em;
-}
-
-.renderedcopy {
+/*-- rendered copy style --*/
+#copyRenderedTarget {
+  display: none;
   color: black;
   background-color: white;
-  display: none;
 }
+/*-- end of rendered copy style --*/

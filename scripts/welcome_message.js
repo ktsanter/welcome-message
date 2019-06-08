@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------------
 class WelcomeMessage {
   constructor() {
-    this._version = '0.04';
+    this._version = '0.05';
     this._container = null;
   }
   
@@ -51,7 +51,7 @@ class WelcomeMessage {
   static _renderSection(sectionId, sectionMarkdown, standards) {
     var elem = document.getElementById(sectionId);
     var markdown = WelcomeMessage._replaceTemplateVariables(sectionMarkdown, standards);
-    elem.innerHTML = WelcomeMessage._convertMarkdownToHTML(markdown);
+    elem.innerHTML = MarkdownToHTML.convert(markdown);
   }
   
   hasPasswords() {
@@ -107,17 +107,5 @@ class WelcomeMessage {
     for (var i = 0; i < toElim.length; i++) {
       toElim[i].parentNode.removeChild(toElim[i]);
     }
-  }
-  
-	//------------------------------------------------------------------
-	// process MarkDown
-	//------------------------------------------------------------------  
-  static _convertMarkdownToHTML(text) {
-    var reader = new commonmark.Parser();
-    var writer = new commonmark.HtmlRenderer();
-    var parsed = reader.parse(text);
-    var result = writer.render(parsed);
-
-    return result;
   }
 }
