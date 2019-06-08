@@ -2,12 +2,11 @@
 //-----------------------------------------------------------------------------------
 // navigation front-end for welcome messages
 //-----------------------------------------------------------------------------------
-// TODO: finish message generation
 // TODO: obfuscate coursekey and audience?
 //-----------------------------------------------------------------------------------
 
 const app = function () {
-  const appversion = '0.02';
+  const appversion = '0.04';
   const appname = 'Course welcome messages';
 	const page = {};
   const settings = {};
@@ -24,12 +23,13 @@ const app = function () {
 	//----------------------------------------
   function init() {
 		page.body = document.getElementsByTagName('body')[0];
-    page.error = CreateElement._createDiv('errorMessageWelcomeNav', null, '')
+    page.error = CreateElement.createDiv('errorMessageWelcomeNav', null, '')
     page.body.appendChild(page.error);
     page.message = new WelcomeMessage();
 		
 		if (_initializeSettings()) {
-      _renderControlbar();
+      //_renderControlbar();
+      _renderPage();
 		}
   }
   
@@ -44,11 +44,18 @@ const app = function () {
 	
 	//-----------------------------------------------------------------------------
 	// page rendering
-	//-----------------------------------------------------------------------------  
+	//-----------------------------------------------------------------------------
+  async function _renderPage() {
+    await _renderControlbar();
+       
+    page.messagecontainer = CreateElement.createDiv(null, 'message-container');
+    page.body.appendChild(page.messagecontainer);
+  }
+  
   async function _renderControlbar() {
-    var container = CreateElement._createDiv(null, 'controlbar');
+    var container = CreateElement.createDiv(null, 'controlbar');
     page.body.appendChild(container);
-    container.appendChild(CreateElement._createDiv(null, 'controlbar-title', appname));
+    container.appendChild(CreateElement.createDiv(null, 'controlbar-title', appname));
     _renderNotice(container);
     
     var resultdata = await _getNavInfo();
@@ -56,32 +63,29 @@ const app = function () {
       var courseList = resultdata.courselist;
       settings.message = {student: resultdata.studentmessage, mentor: resultdata.mentormessage};
       
-      var elemSelect = CreateElement._createSelect('courseSelect', 'controlbar-select', e => _handleChangeSelect(e));
+      var elemSelect = CreateElement.createSelect('courseSelect', 'controlbar-select', e => _handleChangeSelect(e));
       container.appendChild(elemSelect);
-      elemSelect.appendChild(CreateElement._createOption(null, null, NO_COURSE, 'select a course...'));
+      elemSelect.appendChild(CreateElement.createOption(null, null, NO_COURSE, 'select a course...'));
       for (var i = 0; i < courseList.length; i++) {
-        elemSelect.appendChild(CreateElement._createOption(null, null, courseList[i].coursekey, courseList[i].coursename));
+        elemSelect.appendChild(CreateElement.createOption(null, null, courseList[i].coursekey, courseList[i].coursename));
       }
       
-      container.appendChild(CreateElement._createRadio(null, 'controlbar-audience', 'audience', 'student', 'student', true, _handleAudienceClick));
-      container.appendChild(CreateElement._createRadio(null, 'controlbar-audience', 'audience', 'mentor', 'mentor', false, _handleAudienceClick));
+      container.appendChild(CreateElement.createRadio(null, 'controlbar-audience', 'audience', 'student', 'student', true, _handleAudienceClick));
+      container.appendChild(CreateElement.createRadio(null, 'controlbar-audience', 'audience', 'mentor', 'mentor', false, _handleAudienceClick));
       settings.audience = 'student';
       
-      container.appendChild(CreateElement._createIcon('iconLink', 'fa-lg fas fa-link', 'create link to welcome message page', _handleLinkClick));
-      container.appendChild(CreateElement._createIcon('iconMessage', 'fa-lg fas fa-comment-alt', 'create formatted message suitable for email', _handleMessageClick));
-      
-      page.messagecontainer = CreateElement._createDiv(null, 'message-container');
-      page.body.appendChild(page.messagecontainer);
+      container.appendChild(CreateElement.createIcon('iconLink', 'fa-lg fas fa-link', 'create link to welcome message page', _handleLinkClick));
+      container.appendChild(CreateElement.createIcon('iconMessage', 'fa-lg fas fa-comment-alt', 'create formatted message suitable for email', _handleMessageClick));
     }
   }
 
   function _renderNotice(attachTo) {
-    var container = CreateElement._createDiv(null, 'controlbar-notice');
+    var container = CreateElement.createDiv(null, 'controlbar-notice');
     attachTo.appendChild(container);
     
-    page.notice = CreateElement._createDiv('notice', 'notice');
+    page.notice = CreateElement.createDiv('notice', 'notice');
     container.appendChild(page.notice);
-    page.spinner = CreateElement._createIcon('spinner', 'fa fa-spinner fa-pulse fa-3x fa-fw"');
+    page.spinner = CreateElement.createIcon('spinner', 'fa fa-spinner fa-pulse fa-3x fa-fw"');
     container.appendChild(page.spinner);
   }
   
@@ -178,7 +182,7 @@ const app = function () {
       LINK: linkspan, 
       PASSWORDS: passwordlinkspan
     });
-    msg = _convertMarkdownToHTML(msg);
+    msg = MarkdownToHTML.convert(msg);
     
     _copyRenderedToClipboard(msg);
     _setNotice('copied message');
@@ -211,51 +215,20 @@ const app = function () {
   // clipboard functions
   //----------------------------------------
   function _copyToClipboard(txt) {
-    if (!page._clipboard) page._clipboard = new ClipboardCopy();
+    if (!page._clipboard) page._clipboard = new ClipboardCopy(page.body, 'plain');
 
-    page._clipboard._copyToClipboard(txt);
+    page._clipboard.copyToClipboard(txt);
 	}	
 
   function _copyRenderedToClipboard(txt) {
-    var container, elemButton, elemTarget;
-    
-    if (!page._renderedclipboardcontainer) {
-      container = CreateElement._createDiv('renderedCopyContainer', 'renderedcopy');
-      elemButton = CreateElement._createButton('btnCopyRendered', null, 'hide me');
-      elemTarget = CreateElement._createDiv('divCopyRenderedTarget', null);
-      elemButton.setAttribute('data-clipboard-target', '#' + elemTarget.id);
-      var junk = new Clipboard(elemButton); 
-      
-      container.appendChild(elemButton);
-      container.appendChild(elemTarget);
-      page._renderedclipboardcontainer = container;
-      page.body.appendChild(page._renderedclipboardcontainer);
-      
-    } else {
-      container = document.getElementById('renderedCopyContainer');
-      elemButton = document.getElementById('btnCopyRendered');
-      elemTarget = document.getElementById('divCopyRenderedTarget');
-    }
-    
-    container.style.display = 'block';
-    elemTarget.innerHTML = txt;
-    elemButton.click();
-    container.style.display = 'none';
-  }
-  
+    if (!page._renderedclipboard) page._renderedclipboard = new ClipboardCopy(page.body, 'rendered');
+
+    page._renderedclipboard.copyRenderedToClipboard(txt);
+	}	
   
 	//------------------------------------------------------------------
 	// process MarkDown
-	//------------------------------------------------------------------  
-  function _convertMarkdownToHTML(text) {
-    var reader = new commonmark.Parser();
-    var writer = new commonmark.HtmlRenderer();
-    var parsed = reader.parse(text);
-    var result = writer.render(parsed);
-
-    return result;
-  }
-  
+	//------------------------------------------------------------------    
   function _replaceTemplateVariables(str, replacements) {
     var templateVars = str.match(/\[\[[^\[^\]]*\]\]/g);  // should match [[xxxxx]]
     if (templateVars) {

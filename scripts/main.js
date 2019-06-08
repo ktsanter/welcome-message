@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------------
 
 const app = function () {
-  const appversion = '0.04';
+  const appversion = '0.05';
 	const page = {};
   const settings = {};
   
@@ -23,8 +23,8 @@ const app = function () {
 
     _renderStandardElements();
 		
-		_setNotice('initializing...');
-		if (_initializeSettings()) {
+    var expectedQueryParams = [{key: 'coursekey', required: true}, {key: 'audience', required: true}];
+		if (_initializeSettings(expectedQueryParams)) {
 			_setNotice('loading...');
 
       var requestParams = {coursekey: settings.coursekey};
@@ -41,15 +41,22 @@ const app = function () {
 	//-------------------------------------------------------------------------------------
 	// query params:
 	//-------------------------------------------------------------------------------------
-	function _initializeSettings() {
+	function _initializeSettings(expectedParams) {
     var result = false;
 
     var urlParams = new URLSearchParams(window.location.search);
-		settings.coursekey = urlParams.has('coursekey') ? urlParams.get('coursekey') : null;
-		settings.audience = urlParams.has('audience') ? urlParams.get('audience') : null;
+    for (var i = 0; i < expectedParams.length; i++) {
+      var key = expectedParams[i].key;
+      settings[key] = urlParams.has(key) ? urlParams.get(key) : null;
+    }
 
-    if (settings.coursekey != null && settings.coursekey != '' 
-        && settings.audience != null && settings.audience != '') {
+    var receivedRequiredParams = true;
+    for (var i = 0; i < expectedParams.length && receivedRequiredParams; i++) {
+      var key = expectedParams[i].key;
+      if (expectedParams[i].required) receivedRequiredParams = (settings[key] != null);
+    }
+    
+    if (receivedRequiredParams) {
 			result = true;
 
     } else {   
@@ -63,7 +70,7 @@ const app = function () {
 	// page rendering
 	//-----------------------------------------------------------------------------  
   function _renderStandardElements() {
-    page.notice = CreateElement._createDiv('notice', 'notice');
+    page.notice = CreateElement.createDiv('notice', 'notice');
     page.body.appendChild(page.notice);
   }
 

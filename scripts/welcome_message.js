@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------------
 class WelcomeMessage {
   constructor() {
-    this._version = '0.03';
+    this._version = '0.04';
     this._container = null;
   }
   
@@ -23,7 +23,7 @@ class WelcomeMessage {
 	//-----------------------------------------------------------------------------  
   renderMessage(appendTo) {
     this._removeContainer();
-    this._container = CreateElement._createDiv('containerWelcomeMessage', 'container-fluid', this._config.container);
+    this._container = CreateElement.createDiv('containerWelcomeMessage', 'container-fluid', this._config.container);
     appendTo.appendChild(this._container);
     
     WelcomeMessage._renderSection('innercontainer', this._config.innercontainer, this._standards);
@@ -63,7 +63,7 @@ class WelcomeMessage {
     var section = document.getElementById(sectionId);
 
     if (passwordStandard != '' && passwordStandard != 'There are no exam passwords')   {
-      section.appendChild(CreateElement._createLink(null, null,  'course passwords', passwordLink));
+      section.appendChild(CreateElement.createLink(null, null,  'course passwords', passwordLink));
     } else {
       section.style.display = 'none';
     }

@@ -8,29 +8,39 @@ class CreateElement {
   constructor () {
     this._version = '0.01';
   }
-  
-  static _createDiv(id, classList, html, handler) {
-    var elem = document.createElement('div');
+      
+  static _createElement(elemType, id, classList) {
+    var elem = document.createElement(elemType);
     if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+    CreateElement.addClassList(elem, classList);
+    return elem;
+  }
+  
+  static addClassList(elem, classList) {
+    if (classList && classList != '') {
+      var splitClass = classList.split(' ');
+      for (var i = 0; i < splitClass.length; i++) {
+        elem.classList.add(splitClass[i]);
+      }
+    }
+  }
+  
+  static createDiv(id, classList, html, handler) {
+    var elem = CreateElement._createElement('div', id, classList);
     if (html != null) elem.innerHTML = html;
     
     return elem;
   }
   
-  static _createSpan(id, classList, html) {
-    var elem = document.createElement('span');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+  static createSpan(id, classList, html) {
+    var elem = CreateElement._createElement('span', id, classList);
     if (html != null) elem.innerHTML = html;
     
     return elem;
   }
   
-  static _createImage(id, classList, src, title, handler, dblclickhandler) {
-    var elem = document.createElement('img');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+  static createImage(id, classList, src, title, handler, dblclickhandler) {
+    var elem = CreateElement._createElement('img', id, classList);
     if (src != null) elem.src = src;
     if (title) elem.title = title;
     if (handler) elem.addEventListener('click', handler, false);
@@ -39,10 +49,8 @@ class CreateElement {
     return elem;
   }
     
-  static _createIcon(id, classList, title, handler, dblclickhandler) {
-    var elem = document.createElement('i');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+  static createIcon(id, classList, title, handler, dblclickhandler) {
+    var elem = CreateElement._createElement('i', id, classList);
     if (title) elem.title = title;
     if (handler) elem.addEventListener('click', handler, false);
     if (dblclickhandler) elem.addEventListener('dblclick', dblclickhandler, false);
@@ -50,10 +58,8 @@ class CreateElement {
     return elem;
   }
 
-  static _createButton(id, classList, label, title, handler) {
-    var elem = document.createElement('button');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+  static createButton(id, classList, label, title, handler) {
+    var elem = CreateElement._createElement('button', id, classList);
     elem.innerHTML = label;
     elem.title = title;
     if (handler) elem.addEventListener('click', e => handler(e), false);
@@ -61,10 +67,8 @@ class CreateElement {
     return elem;
   }
   
-  static _createLink(id, classList, title, href, handler) {
-    var elem = document.createElement('a');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+  static createLink(id, classList, title, href, handler) {
+    var elem = CreateElement._createElement('a', id, classList);
     elem.innerHTML = title;
     elem.href = href;
     if (handler) elem.addEventListener('click', handler, false);
@@ -72,66 +76,51 @@ class CreateElement {
     return elem;
   }
 
-  static _createLink(id, classList, title, href, handler) {
-    var elem = document.createElement('a');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
-    elem.innerHTML = title;
-    if (href) elem.href = href;
-    if (handler) elem.addEventListener('click', handler, false);
-    
-    return elem;
-  }
-
-  static _createTextArea(id, classList) {
-    var elem = document.createElement('textarea');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+  static createTextArea(id, classList) {
+    var elem = CreateElement._createElement('textarea', id, classList);
     
     return elem;
   }
   
-  static _createHR(id, classList) {
-    var elem = document.createElement('hr');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+  static createHR(id, classList) {
+    var elem = CreateElement._createElement('hr', id, classList);
     
     return elem;
   }
 
-  static _createBR(id, classList) {
-    var elem = document.createElement('br');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+  static createBR(id, classList) {
+    var elem = CreateElement._createElement('br', id, classList);
     
     return elem;
   }
 
-  static _createSelect(id, classList, changehandler) {
-    var elem = document.createElement('select');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+  static createSelect(id, classList, changehandler) {
+    var elem = CreateElement._createElement('select', id, classList);
     if (changehandler) elem.addEventListener('change', changehandler, false);
     
     return elem;
   }
   
-   static _createOption(id, classList, value, label) {
-    var elem = document.createElement('option');
-    if (id && id != '') elem.id = id;
-    CreateElement._addClassList(elem, classList);
+   static createOption(id, classList, value, label) {
+    var elem = CreateElement._createElement('option', id, classList);
     elem.value = value;
     elem.innerHTML = label;
     
     return elem;
   }
-   
-  static _createCheckbox(id, classList, groupName, buttonValue, displayValue, checked, handler) {
-    var container = CreateElement._createSpan(null, null);
+  
+  static createTextInput(id, classList, initialContents) {
+    var elem = CreateElement._createElement('input', id, classList);
+    elem.type = 'text';
+    if (initialContents) elem.value = initialContents;
     
-    var elem = document.createElement('input');
-    CreateElement._addClassList(elem, classList);
-    elem.id = id;
+    return elem;
+  }
+   
+  static createCheckbox(id, classList, groupName, buttonValue, displayValue, checked, handler) {
+    var container = CreateElement.createSpan(null, null);
+    
+    var elem = CreateElement._createElement('input', id, classList);
     elem.type = 'checkbox';
     elem.name = groupName;
     elem.value = buttonValue;
@@ -139,21 +128,17 @@ class CreateElement {
     elem.addEventListener('click', e => handler(e), false);
     container.appendChild(elem);
     
-    var label = document.createElement('label');
-    label.htmlFor = id;
+    var label = CreateElement._createElement('label', id, classList);
     label.innerHTML = displayValue;
-    CreateElement._addClassList(label, classList);
     container.appendChild(label);
 
     return container;
   }
   
-  static _createRadio(id, classList, groupName, buttonValue, displayValue, checked, handler) {
-    var container = CreateElement._createSpan(null, null);
+  static createRadio(id, classList, groupName, buttonValue, displayValue, checked, handler) {
+    var container = CreateElement.createSpan(null, null);
     
-    var elem = document.createElement('input');
-    CreateElement._addClassList(elem, classList);
-    elem.id = id;
+    var elem = CreateElement._createElement('input', id, classList);
     elem.type = 'radio';
     elem.name = groupName;
     elem.value = buttonValue;
@@ -161,21 +146,11 @@ class CreateElement {
     elem.addEventListener('click', e => handler(e), false);
     container.appendChild(elem);
     
-    var label = document.createElement('label');
+    var label = CreateElement._createElement('label', id, classList);
     label.htmlFor = id;
     label.innerHTML = displayValue;
-    CreateElement._addClassList(label, classList);
     container.appendChild(label);
 
     return container;
-  }
-  
-  static _addClassList(elem, classList) {
-    if (classList && classList != '') {
-      var splitClass = classList.split(' ');
-      for (var i = 0; i < splitClass.length; i++) {
-        elem.classList.add(splitClass[i]);
-      }
-    }
   }
 }
