@@ -2,8 +2,7 @@
 //-----------------------------------------------------------------------------------
 // navigation front-end for welcome messages
 //-----------------------------------------------------------------------------------
-// TODO: obfuscate coursekey and audience?
-// TODO: use standard_notice?
+// TODO: 
 //-----------------------------------------------------------------------------------
 
 const app = function () {
@@ -29,7 +28,6 @@ const app = function () {
     page.message = new WelcomeMessage();
 		
 		if (_initializeSettings()) {
-      //_renderControlbar();
       _renderPage();
 		}
   }
@@ -135,7 +133,7 @@ const app = function () {
       if (i != 0) justpath += '/';
       justpath += splitpath[i];
     }
-    var filename = 'index2.html';
+    var filename = 'index.html';
     var queryParams = '?coursekey=' + coursekey + '&audience=' + audience;
 
     
@@ -148,7 +146,7 @@ const app = function () {
     if (!coursekey || !audience || coursekey == NO_COURSE) return;
 
     _copyToClipboard(_makeURLForWelcomePage(coursekey, audience));
-    _setNotice('copied link');
+    page.notice.setNotice('copied link');
   }
   
   function _copyMessageText() {
@@ -179,9 +177,8 @@ const app = function () {
       PASSWORDS: passwordlinkspan
     });
     msg = MarkdownToHTML.convert(msg);
-    
     _copyRenderedToClipboard(msg);
-    _setNotice('copied message');
+    page.notice.setNotice('copied message');
   }
   
 	//------------------------------------------------------------------

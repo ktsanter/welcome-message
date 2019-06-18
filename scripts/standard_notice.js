@@ -14,12 +14,18 @@ class StandardNotice {
    _renderNormalNotice(attachTo) {
     var container = CreateElement.createDiv(null, 'standard-notice');
     attachTo.appendChild(container);
+    this._normalNoticeContainer = container;
     
     this._normalNotice = CreateElement.createDiv(null, null);
     container.appendChild(this._normalNotice);
     this._elemNoticeSpinner = CreateElement.createIcon('noticeSpinner', 'fa fa-spinner fa-pulse fa-3x fa-fw"');
     container.appendChild(this._elemNoticeSpinner);
   }  
+  
+  removeNotice() {
+    this._errorNotice.parentNode.removeChild(this._errorNotice);
+    this._normalNoticeContainer.parentNode.removeChild(this._normalNoticeContainer);
+  }
   
 	reportError (src, err) {
 		this._errorNotice.innerHTML = 'Error in ' + src + ': ' + err.name + ' "' + err.message + '"';
