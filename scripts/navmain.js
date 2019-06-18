@@ -166,7 +166,7 @@ const app = function () {
 
     var passwordmsg = '- This course has no passwords.\n';
     if (page.message.hasPasswords()) {
-      passwordmsg = '- This exam(s) in this course have passwords.  Please keep them secure - when exam time comes please enter them for your students.\n';
+      passwordmsg = '- This exam(s) in this course have passwords.  Please help keep them secure by entering them for your students when exam time comes.\n';
       passwordmsg += 'The ' + passwords.year + ' passwords for the course are: ';
       if (passwords.midtermpassword != '[none]') passwordmsg += '\n    - <strong>midterm exam:</strong> ' + passwords.midtermpassword;
       if (passwords.finalpassword != '[none]') passwordmsg += '\n    - <strong>final exam:</strong> ' + passwords.finalpassword;
