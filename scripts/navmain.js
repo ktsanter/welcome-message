@@ -12,8 +12,10 @@ const app = function () {
   const settings = {};
   
   const apiInfo = {
-    apibase: 'https://script.google.com/macros/s/AKfycbweqaXGa76eKl_Tuj84UgUyc21K8ty9TE7Je1ffN9D2ZO4CpWxE/exec',
-    apikey: 'MV_welcomeAPI'
+    welcome: {
+      apibase: 'https://script.google.com/macros/s/AKfycbweqaXGa76eKl_Tuj84UgUyc21K8ty9TE7Je1ffN9D2ZO4CpWxE/exec',
+      apikey: 'MV_welcomeAPI'
+    },
   };
   
   const NO_COURSE = 'no-course';
@@ -84,7 +86,7 @@ const app = function () {
 
     page.notice.setNotice('loading course list', true);    
     var requestParams = {};
-    var requestResult = await googleSheetWebAPI.webAppGet(apiInfo, 'navinfo', requestParams, page.notice);
+    var requestResult = await googleSheetWebAPI.webAppGet(apiInfo.welcome, 'navinfo', requestParams, page.notice);
 
     if (requestResult.success) {
       page.notice.setNotice('');
@@ -109,19 +111,20 @@ const app = function () {
     page.notice.setNotice('loading course info', true);
         
     var requestParams = {coursekey: coursekey};
-    var requestResult = await googleSheetWebAPI.webAppGet(apiInfo, 'courseinfo', requestParams, page.notice);
+    var requestResult = await googleSheetWebAPI.webAppGet(apiInfo.welcome, 'courseinfo', requestParams, page.notice);
 
     if (requestResult.success) {
       page.notice.setNotice('');
       var data = requestResult.data;
-      _renderWelcomeMessage(audience, data.config[audience], data.standards, data.passwordlink);
+      settings.passworddata = data.passwords;
+      _renderWelcomeMessage(audience, data.config[audience], data.standards);
     } else {
       page.notice.setNotice('load failed');
     }
   }
   
-  function _renderWelcomeMessage(audience, config, standards, passwordlink) {
-    page.message.setParams(audience, config, standards, passwordlink);
+  function _renderWelcomeMessage(audience, config, standards) {
+    page.message.setParams(audience, config, standards);
     page.message.renderMessage(page.messagecontainer);
   }  
 	  
@@ -152,29 +155,28 @@ const app = function () {
   function _copyMessageText() {
     var coursekey = settings.coursekey;
     var audience = settings.audience;
+    var passwords = settings.passworddata;
     if (!coursekey || !audience || coursekey == NO_COURSE) return;
     
     var elemSelect = document.getElementById('courseSelect');
     var coursename = elemSelect[elemSelect.selectedIndex].text;
     var url = _makeURLForWelcomePage(coursekey, audience);
     
-    var linkspan = '<span style="color: white; background-color: #115e6e; border: 1px solid white; border-radius: 6px; padding: 4px 4px;">';
-    linkspan += '<a href="' + url + '" target="_blank" style="color:white; background-color: #115e6e; text-decoration: underline;">welcome letter</a>';
-    linkspan += '</span>';
-    
-    var passwordlinkspan = '-   This course has no passwords.\n';
+    var linkspan = '<a href="' + url + '" target="_blank" style="text-decoration: underline">**welcome letter**</a>';
+
+    var passwordmsg = '- This course has no passwords.\n';
     if (page.message.hasPasswords()) {
-      var passwordlinkspan = '<span style="color: white; background-color: #115e6e; border: 1px solid white; border-radius: 6px; padding: 4px 4px;">';
-      passwordlinkspan += '<a href="' + page.message._passwordlink + '" target="_blank" style="color:white; background-color: #115e6e; text-decoration: underline;">course passwords</a>';
-      passwordlinkspan += '</span>';
-      passwordlinkspan = '- The exams in this course are password-protected and you can find them here: ' + passwordlinkspan + '.  Please keep them secure - when exam time comes please enter them for your students.\n';
+      passwordmsg = '- This exam(s) in this course have passwords.  Please keep them secure - when exam time comes please enter them for your students.\n';
+      passwordmsg += 'The ' + passwords.year + ' passwords for the course are: ';
+      if (passwords.midtermpassword != '[none]') passwordmsg += '\n    - <strong>midterm exam:</strong> ' + passwords.midtermpassword;
+      if (passwords.finalpassword != '[none]') passwordmsg += '\n    - <strong>final exam:</strong> ' + passwords.finalpassword;
     }
     
     var msg = settings.message[audience];
     msg = _replaceTemplateVariables(msg, {
       COURSE: '***' + coursename + '***', 
       LINK: linkspan, 
-      PASSWORDS: passwordlinkspan
+      PASSWORDS: passwordmsg
     });
     msg = MarkdownToHTML.convert(msg);
     _copyRenderedToClipboard(msg);

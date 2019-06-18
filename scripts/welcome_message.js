@@ -6,15 +6,14 @@
 //-----------------------------------------------------------------------------------
 class WelcomeMessage {
   constructor() {
-    this._version = '0.05';
+    this._version = '0.06';
     this._container = null;
   }
   
-  setParams(audience, config, standards, passwordlink) {
+  setParams(audience, config, standards) {
     this._audience = audience;
     this._config = config;
     this._standards = standards;
-    this._passwordlink = passwordlink;
     this._removeContainer();    
   }
   
@@ -27,9 +26,6 @@ class WelcomeMessage {
     appendTo.appendChild(this._container);
     
     WelcomeMessage._renderSection('innercontainer', this._config.innercontainer, this._standards);
-    //----- removed 2019/06/18 -----------------------
-    //if (this._audience == 'mentor') WelcomeMessage._renderPasswordSection('passwords', this._standards.Assessment.Assess_passwords, this._passwordlink);
-    //------------------------------------------------
     
     for (var key in this._config) {
       if (key != 'container' && key != 'innercontainer') WelcomeMessage._renderSection(key, this._config[key], this._standards);
@@ -60,17 +56,7 @@ class WelcomeMessage {
     var passwordStandard = this._standards.Assessment.Assess_passwords;
     return (passwordStandard != '' && passwordStandard != 'There are no exam passwords');
   }
-  
-  static _renderPasswordSection(sectionId, passwordStandard, passwordLink) {
-    var section = document.getElementById(sectionId);
-
-    if (passwordStandard != '' && passwordStandard != 'There are no exam passwords')   {
-      section.appendChild(CreateElement.createLink(null, null,  'course passwords', passwordLink));
-    } else {
-      section.style.display = 'none';
-    }
-  }
-  
+    
   static _replaceTemplateVariables(str, standards) {
     var standardsVars = str.match(/\[\[([^\[^\]^.]*)\.([^\[^\]]*)\]\]/g);  // should match [[major.minor]]
     if (standardsVars) {
