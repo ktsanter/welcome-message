@@ -152,7 +152,7 @@ const app = function () {
     page.notice.setNotice('copied link');
   }
   
-  function _copyMessageText() {
+  function _copyMessageText(renderAsMarkdown) {
     var coursekey = settings.coursekey;
     var audience = settings.audience;
     var passwords = settings.passworddata;
@@ -178,9 +178,14 @@ const app = function () {
       LINK: linkspan, 
       PASSWORDS: passwordmsg
     });
-    msg = MarkdownToHTML.convert(msg);
-    _copyRenderedToClipboard(msg);
-    page.notice.setNotice('copied message');
+    
+    if (renderAsMarkdown) {
+      _copyToClipboard(msg);
+      page.notice.setNotice('markdown message copied');
+    } else {
+      _copyRenderedToClipboard(MarkdownToHTML.convert(msg));
+      page.notice.setNotice('message copied');
+    }
   }
   
 	//------------------------------------------------------------------
@@ -202,8 +207,8 @@ const app = function () {
     _copyLinkText();
   }
   
-  function _handleMessageClick() {
-    _copyMessageText();
+  function _handleMessageClick(evt) {
+    _copyMessageText(evt.ctrlKey);
   }
   
   //---------------------------------------
