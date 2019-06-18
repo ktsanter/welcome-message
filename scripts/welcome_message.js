@@ -27,7 +27,9 @@ class WelcomeMessage {
     appendTo.appendChild(this._container);
     
     WelcomeMessage._renderSection('innercontainer', this._config.innercontainer, this._standards);
-    if (this._audience == 'mentor') WelcomeMessage._renderPasswordSection('passwords', this._standards.Assessment.Assess_passwords, this._passwordlink);
+    //----- removed 2019/06/18 -----------------------
+    //if (this._audience == 'mentor') WelcomeMessage._renderPasswordSection('passwords', this._standards.Assessment.Assess_passwords, this._passwordlink);
+    //------------------------------------------------
     
     for (var key in this._config) {
       if (key != 'container' && key != 'innercontainer') WelcomeMessage._renderSection(key, this._config[key], this._standards);
