@@ -174,7 +174,7 @@ const app = function () {
     
     var passwordmsg = '- This course has no passwords.\n';
     if (page.message.hasPasswords()) {
-      passwordmsg = '- This exam(s) in this course have passwords.  I will send them to you in a separate message.';
+      passwordmsg = '- At least one exam in this course is password-protected.  I will send passwords to you in a separate message.';
       passwordmsg += ' Please help keep them secure by entering them for your students when exam time comes.\n';
     }
     
