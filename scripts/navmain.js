@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------------------
 
 const app = function () {
-  const appversion = '0.04';
+  const appversion = '0.05';
   const appname = 'Course welcome messages';
 	const page = {};
   const settings = {};
@@ -164,18 +164,25 @@ const app = function () {
     
     var linkspan = '<a href="' + url + '" target="_blank" style="text-decoration: underline">**welcome letter**</a>';
 
+    var startendMessage = '- We will have students in the course on different schedules, with two different start dates.';
+    startendMessage += ' I will post pacing information for each start date in the weekly announcements';
+    startendMessage += ' and your students may need some guidance as to which they are to follow.';
+    
+    if (page.message._standards.AdvancedPlacement.AP) {
+      startendMessage = '- This course has firm due dates with late penalties. All students will follow the same pacing and have the same due dates.';
+    }
+    
     var passwordmsg = '- This course has no passwords.\n';
     if (page.message.hasPasswords()) {
-      passwordmsg = '- This exam(s) in this course have passwords.  Please help keep them secure by entering them for your students when exam time comes.\n';
-      passwordmsg += 'The ' + passwords.year + ' passwords for the course are: ';
-      if (passwords.midtermpassword != '[none]') passwordmsg += '\n    - <strong>midterm exam:</strong> ' + passwords.midtermpassword;
-      if (passwords.finalpassword != '[none]') passwordmsg += '\n    - <strong>final exam:</strong> ' + passwords.finalpassword;
+      passwordmsg = '- This exam(s) in this course have passwords.  I will send them to you in a separate message.';
+      passwordmsg += ' Please help keep them secure by entering them for your students when exam time comes.\n';
     }
     
     var msg = settings.message[audience];
     msg = _replaceTemplateVariables(msg, {
       COURSE: '***' + coursename + '***', 
-      LINK: linkspan, 
+      LINK: linkspan,
+      STARTEND: startendMessage,
       PASSWORDS: passwordmsg
     });
     
