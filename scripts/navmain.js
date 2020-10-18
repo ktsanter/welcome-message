@@ -7,7 +7,7 @@
 
 const app = function () {
   const appversion = '0.05';
-  const appname = 'Course welcome messages';
+  const appname = 'Course: ';
 	const page = {};
   const settings = {};
   
